@@ -1,5 +1,6 @@
 package edu.eci.aquaport.servicio;
 
+import edu.eci.aquaport.modelo.CondicionesHidricas;
 import edu.eci.aquaport.modelo.DroneAcuatico;
 import edu.eci.aquaport.modelo.ZonaHidrica;
 
@@ -13,6 +14,17 @@ public class ValidadorMision {
 
     public boolean estaDisponible(DroneAcuatico drone) {
         return drone.isDisponible();
+    }
+
+    public boolean soportaCarga(DroneAcuatico drone, int pesoGramos) {
+        return pesoGramos <= drone.getCapacidadMaximaGramos();
+    }
+
+    public boolean esApto(DroneAcuatico drone, int pesoGramos, CondicionesHidricas condiciones) {
+        return estaDisponible(drone)
+                && tieneBateriaSuficiente(drone)
+                && soportaCarga(drone, pesoGramos)
+                && drone.puedeOperarEn(condiciones);
     }
 
     public ZonaHidrica validarPuntoLlegada(String puntoLlegada) {
