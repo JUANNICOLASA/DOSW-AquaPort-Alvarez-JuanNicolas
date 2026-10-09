@@ -167,6 +167,6 @@ gitGraph
 
 **Resultado:** 44 clases en dominio, 7 en aplicación y 14 en infraestructura, sin violaciones de capa. Las dependencias externas (Logger de notificación, cliente de la API hídrica, almacenamiento) viven en infraestructura y llegan a la aplicación por los puertos del dominio.
 
-## Capturas del uso de IA
+## Evaluación con IA
 
-Las capturas de la IA asistente están en [docs/capturas-ia](docs/capturas-ia).
+El reporte de evaluación hecho con la IA asistente (Gemini) está en [docs/evaluacion-ia/reporte-evaluacion-gemini.md](docs/evaluacion-ia/reporte-evaluacion-gemini.md).
