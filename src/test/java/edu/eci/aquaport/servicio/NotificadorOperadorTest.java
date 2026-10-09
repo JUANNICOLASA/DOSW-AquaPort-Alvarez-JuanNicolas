@@ -1,6 +1,8 @@
 package edu.eci.aquaport.servicio;
 
-import edu.eci.aquaport.modelo.DroneAcuatico;
+import edu.eci.aquaport.modelo.DroneSuperficial;
+import edu.eci.aquaport.modelo.EstadoDrone;
+import edu.eci.aquaport.modelo.ZonaHidrica;
 import edu.eci.aquaport.modelo.Mision;
 import edu.eci.aquaport.modelo.TipoCarga;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +25,9 @@ class NotificadorOperadorTest {
     void notificarRegistro_muestraMision() {
         Mision mision = new Mision.Builder()
                 .id("M-001")
-                .drone(new DroneAcuatico("AR-01", "Aqua-Ranger 100", 92, true, "Embalse Norte"))
-                .puntoPartida("Embalse Norte")
-                .puntoLlegada("Laboratorio Hídrico")
+                .drone(new DroneSuperficial("AR-01", 92, EstadoDrone.DISPONIBLE, ZonaHidrica.EMBALSE_NORTE))
+                .puntoPartida(ZonaHidrica.EMBALSE_NORTE)
+                .puntoLlegada(ZonaHidrica.LAB_HIDRICO)
                 .tipoCarga(TipoCarga.SENSOR)
                 .build();
 

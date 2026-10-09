@@ -1,8 +1,10 @@
 package edu.eci.aquaport.servicio;
 
-import edu.eci.aquaport.modelo.DroneAcuatico;
+import edu.eci.aquaport.modelo.DroneSuperficial;
+import edu.eci.aquaport.modelo.EstadoDrone;
 import edu.eci.aquaport.modelo.Mision;
 import edu.eci.aquaport.modelo.TipoCarga;
+import edu.eci.aquaport.modelo.ZonaHidrica;
 import edu.eci.aquaport.repositorio.RepositorioMisionesMemoria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,11 +23,11 @@ class RegistradorMisionesTest {
         registrador = new RegistradorMisiones(new RepositorioMisionesMemoria(), new ValidadorMision());
     }
 
-    private Mision crearMision(String id, int bateria, String puntoLlegada) {
+    private Mision crearMision(String id, int bateria, ZonaHidrica puntoLlegada) {
         return new Mision.Builder()
                 .id(id)
-                .drone(new DroneAcuatico("AR-01", "Aqua-Ranger 100", bateria, true, "Embalse Norte"))
-                .puntoPartida("Embalse Norte")
+                .drone(new DroneSuperficial("AR-01", bateria, EstadoDrone.DISPONIBLE, ZonaHidrica.EMBALSE_NORTE))
+                .puntoPartida(ZonaHidrica.EMBALSE_NORTE)
                 .puntoLlegada(puntoLlegada)
                 .tipoCarga(TipoCarga.SENSOR)
                 .build();
@@ -34,7 +36,7 @@ class RegistradorMisionesTest {
     @Test
     @DisplayName("Una misión válida queda registrada y se puede consultar por id")
     void misionValida_quedaRegistrada() {
-        Mision mision = crearMision("M-001", 80, "Laboratorio Hídrico");
+        Mision mision = crearMision("M-001", 80, ZonaHidrica.LAB_HIDRICO);
 
         registrador.registrar(mision);
 
@@ -44,15 +46,15 @@ class RegistradorMisionesTest {
     @Test
     @DisplayName("Una misión con drone sin batería suficiente no se registra")
     void misionConBateriaInsuficiente_lanzaExcepcion() {
-        Mision mision = crearMision("M-002", 20, "Laboratorio Hídrico");
+        Mision mision = crearMision("M-002", 20, ZonaHidrica.LAB_HIDRICO);
 
         assertThrows(IllegalStateException.class, () -> registrador.registrar(mision));
     }
 
     @Test
-    @DisplayName("Una misión con zona de destino inválida no se registra")
-    void misionConZonaInvalida_lanzaExcepcion() {
-        Mision mision = crearMision("M-003", 80, "Zona Desconocida");
+    @DisplayName("Una misión con el mismo punto de partida y de llegada no se registra")
+    void misionMismaZona_lanzaExcepcion() {
+        Mision mision = crearMision("M-003", 80, ZonaHidrica.EMBALSE_NORTE);
 
         assertThrows(IllegalArgumentException.class, () -> registrador.registrar(mision));
     }
@@ -60,8 +62,8 @@ class RegistradorMisionesTest {
     @Test
     @DisplayName("Listar devuelve todas las misiones registradas")
     void listar_devuelveMisionesRegistradas() {
-        registrador.registrar(crearMision("M-004", 80, "Canal Central"));
-        registrador.registrar(crearMision("M-005", 60, "Laguna Sur"));
+        registrador.registrar(crearMision("M-004", 80, ZonaHidrica.CANAL_CENTRAL));
+        registrador.registrar(crearMision("M-005", 60, ZonaHidrica.LAGUNA_SUR));
 
         assertEquals(2, registrador.listar().size());
     }

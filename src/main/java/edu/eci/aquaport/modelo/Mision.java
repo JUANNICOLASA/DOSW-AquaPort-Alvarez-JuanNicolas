@@ -4,10 +4,11 @@ public class Mision {
 
     private final String id;
     private final DroneAcuatico drone;
-    private final String puntoPartida;
-    private final String puntoLlegada;
+    private final ZonaHidrica puntoPartida;
+    private final ZonaHidrica puntoLlegada;
     private final TipoCarga tipoCarga;
-    private final EstadoMision estado;
+    private final Prioridad prioridad;
+    private EstadoMision estado;
 
     private Mision(Builder builder) {
         this.id = builder.id;
@@ -15,6 +16,7 @@ public class Mision {
         this.puntoPartida = builder.puntoPartida;
         this.puntoLlegada = builder.puntoLlegada;
         this.tipoCarga = builder.tipoCarga;
+        this.prioridad = builder.prioridad;
         this.estado = builder.estado;
     }
 
@@ -26,11 +28,11 @@ public class Mision {
         return drone;
     }
 
-    public String getPuntoPartida() {
+    public ZonaHidrica getPuntoPartida() {
         return puntoPartida;
     }
 
-    public String getPuntoLlegada() {
+    public ZonaHidrica getPuntoLlegada() {
         return puntoLlegada;
     }
 
@@ -38,17 +40,26 @@ public class Mision {
         return tipoCarga;
     }
 
+    public Prioridad getPrioridad() {
+        return prioridad;
+    }
+
     public EstadoMision getEstado() {
         return estado;
+    }
+
+    public void cambiarEstado(EstadoMision nuevoEstado) {
+        this.estado = nuevoEstado;
     }
 
     public static class Builder {
 
         private String id;
         private DroneAcuatico drone;
-        private String puntoPartida;
-        private String puntoLlegada;
+        private ZonaHidrica puntoPartida;
+        private ZonaHidrica puntoLlegada;
         private TipoCarga tipoCarga;
+        private Prioridad prioridad = Prioridad.NORMAL;
         private EstadoMision estado = EstadoMision.PENDIENTE;
 
         public Builder id(String id) {
@@ -61,12 +72,12 @@ public class Mision {
             return this;
         }
 
-        public Builder puntoPartida(String puntoPartida) {
+        public Builder puntoPartida(ZonaHidrica puntoPartida) {
             this.puntoPartida = puntoPartida;
             return this;
         }
 
-        public Builder puntoLlegada(String puntoLlegada) {
+        public Builder puntoLlegada(ZonaHidrica puntoLlegada) {
             this.puntoLlegada = puntoLlegada;
             return this;
         }
@@ -76,32 +87,34 @@ public class Mision {
             return this;
         }
 
+        public Builder prioridad(Prioridad prioridad) {
+            this.prioridad = prioridad;
+            return this;
+        }
+
         public Builder estado(EstadoMision estado) {
             this.estado = estado;
             return this;
         }
 
         public Mision build() {
-            validarTexto(id, "El id de la misión es obligatorio");
-            if (drone == null) {
-                throw new IllegalStateException("La misión debe tener un drone asignado");
+            if (id == null || id.isBlank()) {
+                throw new IllegalStateException("El id de la misión es obligatorio");
             }
-            validarTexto(puntoPartida, "El punto de partida es obligatorio");
-            validarTexto(puntoLlegada, "El punto de llegada es obligatorio");
-            if (tipoCarga == null) {
-                throw new IllegalStateException("El tipo de carga es obligatorio");
-            }
-            if (estado == null) {
-                throw new IllegalStateException("El estado de la misión es obligatorio");
-            }
-            if (!drone.disponible()) {
-                throw new IllegalStateException("El drone " + drone.id() + " no está disponible");
+            validarObligatorio(drone, "La misión debe tener un drone asignado");
+            validarObligatorio(puntoPartida, "El punto de partida es obligatorio");
+            validarObligatorio(puntoLlegada, "El punto de llegada es obligatorio");
+            validarObligatorio(tipoCarga, "El tipo de carga es obligatorio");
+            validarObligatorio(prioridad, "La prioridad de la misión es obligatoria");
+            validarObligatorio(estado, "El estado de la misión es obligatorio");
+            if (!drone.isDisponible()) {
+                throw new IllegalStateException("El drone " + drone.getId() + " no está disponible");
             }
             return new Mision(this);
         }
 
-        private void validarTexto(String valor, String mensaje) {
-            if (valor == null || valor.isBlank()) {
+        private void validarObligatorio(Object valor, String mensaje) {
+            if (valor == null) {
                 throw new IllegalStateException(mensaje);
             }
         }

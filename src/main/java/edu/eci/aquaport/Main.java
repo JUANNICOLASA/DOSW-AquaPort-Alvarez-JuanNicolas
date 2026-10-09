@@ -1,60 +1,67 @@
 package edu.eci.aquaport;
 
+import edu.eci.aquaport.estrategia.PrioridadCriticaStrategy;
 import edu.eci.aquaport.modelo.DroneAcuatico;
-import edu.eci.aquaport.modelo.Mision;
+import edu.eci.aquaport.modelo.NivelAgitacion;
+import edu.eci.aquaport.modelo.CondicionesHidricas;
+import edu.eci.aquaport.modelo.Prioridad;
+import edu.eci.aquaport.modelo.SolicitudTransporte;
 import edu.eci.aquaport.modelo.TipoCarga;
+import edu.eci.aquaport.modelo.ZonaHidrica;
+import edu.eci.aquaport.observador.CentroControlObserver;
+import edu.eci.aquaport.observador.TecnicoMantenimientoObserver;
+import edu.eci.aquaport.repositorio.RepositorioDronesMemoria;
 import edu.eci.aquaport.repositorio.RepositorioMisionesMemoria;
+import edu.eci.aquaport.servicio.AsignadorAutomatico;
+import edu.eci.aquaport.servicio.CondicionesHidricasSimuladas;
 import edu.eci.aquaport.servicio.ConsultorFlota;
 import edu.eci.aquaport.servicio.NotificadorOperador;
-import edu.eci.aquaport.servicio.RegistradorMisiones;
 import edu.eci.aquaport.servicio.ValidadorMision;
 
 import java.util.List;
 
 public class Main {
 
-    private static final String MODELO = "Aqua-Ranger 100";
-
     private Main() {
     }
 
     public static void main(String[] args) {
-        List<DroneAcuatico> flota = List.of(
-                new DroneAcuatico("AR-01", MODELO, 92, true, "Embalse Norte"),
-                new DroneAcuatico("AR-02", MODELO, 45, true, "Canal Central"),
-                new DroneAcuatico("AR-03", MODELO, 18, false, "Laguna Sur"),
-                new DroneAcuatico("AR-04", MODELO, 73, true, "Punto Ribereño Este")
-        );
-
-        ConsultorFlota consultor = new ConsultorFlota();
+        List<DroneAcuatico> flota = FlotaEjemplo.crear();
         NotificadorOperador notificador = new NotificadorOperador();
+        mostrarConsultas(flota, notificador);
+        AsignadorAutomatico asignador = crearAsignador(flota);
 
-        notificador.informar("Disponibles con batería >= 35%: " + consultor.disponiblesConBateriaSuficiente(flota));
-        notificador.informar("IDs disponibles: " + consultor.idsDisponibles(flota));
-        notificador.informar("¿Existe disponible con batería >= 35%?: " + consultor.existeDisponibleConBateriaSuficiente(flota));
-        notificador.informar("Cantidad de disponibles: " + consultor.contarDisponibles(flota));
-        notificador.informar("Drone con mayor batería: " + consultor.droneConMayorBateria(flota).orElse(null));
-
-        RegistradorMisiones registrador = new RegistradorMisiones(new RepositorioMisionesMemoria(), new ValidadorMision());
-
-        registrarMision(registrador, notificador, "M-001", flota.get(0));
-        registrarMision(registrador, notificador, "M-002", flota.get(2));
+        asignar(asignador, notificador, new SolicitudTransporte("S-001", ZonaHidrica.CANAL_CENTRAL,
+                ZonaHidrica.LAB_HIDRICO, TipoCarga.MUESTRA_AGUA, 400, Prioridad.NORMAL));
+        asignar(asignador, notificador, new SolicitudTransporte("S-002", ZonaHidrica.LAB_HIDRICO,
+                ZonaHidrica.EMBALSE_NORTE, TipoCarga.SENSOR, 250, Prioridad.CRITICA));
+        asignar(asignador, notificador, new SolicitudTransporte("S-003", ZonaHidrica.LAGUNA_SUR,
+                ZonaHidrica.EMBALSE_NORTE, TipoCarga.EQUIPO_MEDICION, 1200, Prioridad.ALTA));
     }
 
-    private static void registrarMision(RegistradorMisiones registrador, NotificadorOperador notificador,
-                                        String id, DroneAcuatico drone) {
-        try {
-            Mision mision = new Mision.Builder()
-                    .id(id)
-                    .drone(drone)
-                    .puntoPartida(drone.zona())
-                    .puntoLlegada("Laboratorio Hídrico")
-                    .tipoCarga(TipoCarga.MUESTRA_AGUA)
-                    .build();
-            registrador.registrar(mision);
-            notificador.notificarRegistro(mision);
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            notificador.notificarError(e.getMessage());
-        }
+    private static void mostrarConsultas(List<DroneAcuatico> flota, NotificadorOperador notificador) {
+        ConsultorFlota consultor = new ConsultorFlota();
+        notificador.informar("Disponibles por tipo: " + consultor.disponiblesPorTipo(flota));
+        notificador.informar("Drone óptimo para Embalse Norte: "
+                + consultor.droneOptimoParaZona(flota, ZonaHidrica.EMBALSE_NORTE).orElse(null));
+        notificador.informar("Promedio de batería por tipo: " + consultor.promedioBateriaPorTipo(flota));
+        notificador.informar("Zonas cubiertas por la flota activa: " + consultor.zonasFlotaActiva(flota));
+    }
+
+    private static AsignadorAutomatico crearAsignador(List<DroneAcuatico> flota) {
+        CondicionesHidricasSimuladas condiciones = new CondicionesHidricasSimuladas();
+        condiciones.actualizar(ZonaHidrica.EMBALSE_NORTE, new CondicionesHidricas(NivelAgitacion.MEDIO, 6));
+        AsignadorAutomatico asignador = new AsignadorAutomatico(new RepositorioDronesMemoria(flota), condiciones,
+                new PrioridadCriticaStrategy(), new ValidadorMision(), new RepositorioMisionesMemoria());
+        asignador.registrarObservador(new CentroControlObserver());
+        asignador.registrarObservador(new TecnicoMantenimientoObserver());
+        return asignador;
+    }
+
+    private static void asignar(AsignadorAutomatico asignador, NotificadorOperador notificador,
+                                SolicitudTransporte solicitud) {
+        asignador.asignar(solicitud).ifPresentOrElse(
+                notificador::notificarRegistro,
+                () -> notificador.notificarError("No hay drone apto para la solicitud " + solicitud.id()));
     }
 }
