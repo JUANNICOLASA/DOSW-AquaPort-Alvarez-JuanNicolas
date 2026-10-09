@@ -7,6 +7,8 @@ import edu.eci.aquaport.dominio.modelo.TipoDrone;
 import edu.eci.aquaport.dominio.modelo.ZonaHidrica;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 public final class FlotaEjemplo {
 
@@ -28,7 +30,30 @@ public final class FlotaEjemplo {
             "BUCEADOR;BU-04;52;LAB_HIDRICO;RECARGANDO"
     );
 
+    private static final Map<TipoDrone, String> PREFIJOS = Map.of(
+            TipoDrone.SUPERFICIAL, "AR-", TipoDrone.SEMISUMERGIDO, "SS-", TipoDrone.BUCEADOR, "BU-");
+
+    private static final Map<TipoDrone, List<ZonaHidrica>> ZONAS_ENTERPRISE = Map.of(
+            TipoDrone.SUPERFICIAL, List.of(ZonaHidrica.CANAL_CENTRAL, ZonaHidrica.LAB_HIDRICO),
+            TipoDrone.SEMISUMERGIDO, List.of(ZonaHidrica.LAGUNA_SUR, ZonaHidrica.RIBERA_ESTE),
+            TipoDrone.BUCEADOR, List.of(ZonaHidrica.EMBALSE_NORTE, ZonaHidrica.LAB_HIDRICO));
+
     private FlotaEjemplo() {
+    }
+
+    public static List<DroneAcuatico> crearEnterprise() {
+        FabricaDrones fabrica = new FabricaDrones();
+        return IntStream.rangeClosed(1, 60)
+                .mapToObj(i -> crearDroneEnterprise(fabrica, i))
+                .toList();
+    }
+
+    private static DroneAcuatico crearDroneEnterprise(FabricaDrones fabrica, int numero) {
+        TipoDrone tipo = TipoDrone.values()[(numero - 1) / 20];
+        int indice = (numero - 1) % 20 + 1;
+        ZonaHidrica zona = ZONAS_ENTERPRISE.get(tipo).get(indice % 2);
+        String id = PREFIJOS.get(tipo) + String.format("%02d", indice);
+        return fabrica.crear(tipo, id, 40 + (indice * 7) % 60, zona);
     }
 
     public static List<DroneAcuatico> crear() {
