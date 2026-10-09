@@ -1,0 +1,32 @@
+@startuml c4-contexto-prinplup
+!pragma layout smetana
+!include <C4/C4_Context>
+
+title AquaPort v2 - Diagrama de contexto (C4 nivel 1)
+
+Person(operador, "Operador Hídrico", "Supervisa la flota y las asignaciones automáticas")
+Person(solicitante, "Solicitante", "Pide el transporte de muestras, sensores o equipos")
+Person(admin, "Administrador ECI", "Gestiona la flota de 15 drones y consulta reportes")
+Person(tecnico, "Técnico de Mantenimiento", "Atiende los drones en fallo")
+
+System(aquaport, "AquaPort v2", "Asigna automáticamente el drone más adecuado según zona, carga y condiciones del agua")
+
+System_Ext(apiHidrica, "API Condiciones Hídricas", "Entrega lecturas de los cuerpos de agua")
+System_Ext(centro, "Centro de Control ECI", "Registra misiones y autoriza rutas acuáticas")
+System_Ext(alertas, "Sistema de Alertas", "Distribuye alertas de fallo")
+
+Rel(solicitante, aquaport, "Solicitud de transporte (origen, destino, carga, prioridad)")
+Rel(aquaport, solicitante, "Código de misión y drone asignado")
+Rel(operador, aquaport, "Estrategia de selección activa, supervisión")
+Rel(aquaport, operador, "Estado de la flota y de las misiones")
+Rel(admin, aquaport, "Altas y bajas de drones, consulta de reportes")
+Rel(aquaport, tecnico, "Orden de mantenimiento del drone en fallo")
+Rel(tecnico, aquaport, "Cambio de estado del drone reparado")
+Rel(aquaport, apiHidrica, "Consulta por zona")
+Rel(apiHidrica, aquaport, "Nivel de agitación, profundidad, temperatura")
+Rel(aquaport, centro, "Registro de misión, solicitud de autorización de ruta")
+Rel(centro, aquaport, "Autorización de ruta acuática")
+Rel(aquaport, alertas, "Alerta de drone en FALLO (id, zona, hora)")
+
+SHOW_LEGEND()
+@enduml
