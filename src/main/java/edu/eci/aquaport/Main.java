@@ -1,8 +1,11 @@
 package edu.eci.aquaport;
 
 import edu.eci.aquaport.modelo.DroneAcuatico;
+import edu.eci.aquaport.modelo.DroneSuperficial;
+import edu.eci.aquaport.modelo.EstadoDrone;
 import edu.eci.aquaport.modelo.Mision;
 import edu.eci.aquaport.modelo.TipoCarga;
+import edu.eci.aquaport.modelo.ZonaHidrica;
 import edu.eci.aquaport.repositorio.RepositorioMisionesMemoria;
 import edu.eci.aquaport.servicio.ConsultorFlota;
 import edu.eci.aquaport.servicio.NotificadorOperador;
@@ -13,18 +16,17 @@ import java.util.List;
 
 public class Main {
 
-    private static final String MODELO = "Aqua-Ranger 100";
-
     private Main() {
     }
 
     public static void main(String[] args) {
         List<DroneAcuatico> flota = List.of(
-                new DroneAcuatico("AR-01", MODELO, 92, true, "Embalse Norte"),
-                new DroneAcuatico("AR-02", MODELO, 45, true, "Canal Central"),
-                new DroneAcuatico("AR-03", MODELO, 18, false, "Laguna Sur"),
-                new DroneAcuatico("AR-04", MODELO, 73, true, "Punto Ribereño Este")
+                new DroneSuperficial("AR-01", 92, EstadoDrone.DISPONIBLE, ZonaHidrica.EMBALSE_NORTE),
+                new DroneSuperficial("AR-02", 45, EstadoDrone.DISPONIBLE, ZonaHidrica.CANAL_CENTRAL),
+                new DroneSuperficial("AR-03", 18, EstadoDrone.DISPONIBLE, ZonaHidrica.LAGUNA_SUR),
+                new DroneSuperficial("AR-04", 73, EstadoDrone.DISPONIBLE, ZonaHidrica.RIBERA_ESTE)
         );
+        flota.get(2).cambiarEstado(EstadoDrone.RECARGANDO);
 
         ConsultorFlota consultor = new ConsultorFlota();
         NotificadorOperador notificador = new NotificadorOperador();
@@ -47,8 +49,8 @@ public class Main {
             Mision mision = new Mision.Builder()
                     .id(id)
                     .drone(drone)
-                    .puntoPartida(drone.zona())
-                    .puntoLlegada("Laboratorio Hídrico")
+                    .puntoPartida(drone.getZona())
+                    .puntoLlegada(ZonaHidrica.LAB_HIDRICO)
                     .tipoCarga(TipoCarga.MUESTRA_AGUA)
                     .build();
             registrador.registrar(mision);

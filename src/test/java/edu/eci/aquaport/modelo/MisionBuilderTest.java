@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MisionBuilderTest {
 
-    private final DroneAcuatico disponible = new DroneAcuatico("AR-01", "Aqua-Ranger 100", 92, true, "Embalse Norte");
-    private final DroneAcuatico ocupado = new DroneAcuatico("AR-03", "Aqua-Ranger 100", 18, false, "Laguna Sur");
+    private final DroneAcuatico disponible = new DroneSuperficial("AR-01", 92, EstadoDrone.DISPONIBLE, ZonaHidrica.EMBALSE_NORTE);
+    private final DroneAcuatico ocupado = new DroneSuperficial("AR-03", 18, EstadoDrone.MANTENIMIENTO, ZonaHidrica.LAGUNA_SUR);
 
     private Mision.Builder builderCompleto() {
         return new Mision.Builder()
                 .id("M-001")
                 .drone(disponible)
-                .puntoPartida("Embalse Norte")
-                .puntoLlegada("Laboratorio Hídrico")
+                .puntoPartida(ZonaHidrica.EMBALSE_NORTE)
+                .puntoLlegada(ZonaHidrica.LAB_HIDRICO)
                 .tipoCarga(TipoCarga.MUESTRA_AGUA);
     }
 
@@ -27,8 +27,8 @@ class MisionBuilderTest {
 
         assertEquals("M-001", mision.getId());
         assertEquals(disponible, mision.getDrone());
-        assertEquals("Embalse Norte", mision.getPuntoPartida());
-        assertEquals("Laboratorio Hídrico", mision.getPuntoLlegada());
+        assertEquals(ZonaHidrica.EMBALSE_NORTE, mision.getPuntoPartida());
+        assertEquals(ZonaHidrica.LAB_HIDRICO, mision.getPuntoLlegada());
         assertEquals(TipoCarga.MUESTRA_AGUA, mision.getTipoCarga());
         assertEquals(EstadoMision.PENDIENTE, mision.getEstado());
     }
@@ -68,7 +68,7 @@ class MisionBuilderTest {
     @Test
     @DisplayName("Sin punto de partida lanza IllegalStateException")
     void sinPuntoPartida_lanzaExcepcion() {
-        Mision.Builder builder = builderCompleto().puntoPartida(" ");
+        Mision.Builder builder = builderCompleto().puntoPartida(null);
 
         assertThrows(IllegalStateException.class, builder::build);
     }
@@ -87,6 +87,25 @@ class MisionBuilderTest {
         Mision.Builder builder = builderCompleto().tipoCarga(null);
 
         assertThrows(IllegalStateException.class, builder::build);
+    }
+
+    @Test
+    @DisplayName("Sin prioridad lanza IllegalStateException")
+    void sinPrioridad_lanzaExcepcion() {
+        Mision.Builder builder = builderCompleto().prioridad(null);
+
+        assertThrows(IllegalStateException.class, builder::build);
+    }
+
+    @Test
+    @DisplayName("La misión se crea con prioridad NORMAL y puede cambiar de estado")
+    void misionPorDefecto_prioridadNormalYCambioEstado() {
+        Mision mision = builderCompleto().build();
+
+        mision.cambiarEstado(EstadoMision.ENTREGADA);
+
+        assertEquals(Prioridad.NORMAL, mision.getPrioridad());
+        assertEquals(EstadoMision.ENTREGADA, mision.getEstado());
     }
 
     @Test

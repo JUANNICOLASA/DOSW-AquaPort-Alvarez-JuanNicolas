@@ -12,32 +12,32 @@ public class ConsultorFlota {
 
     public List<DroneAcuatico> disponiblesConBateriaSuficiente(List<DroneAcuatico> flota) {
         return flota.stream()
-                .filter(DroneAcuatico::disponible)
-                .filter(d -> d.bateria() >= BATERIA_MINIMA)
-                .sorted(Comparator.comparingInt(DroneAcuatico::bateria).reversed())
+                .filter(DroneAcuatico::isDisponible)
+                .filter(d -> d.getBateria() >= BATERIA_MINIMA)
+                .sorted(Comparator.comparingInt(DroneAcuatico::getBateria).reversed())
                 .toList();
     }
 
     public List<String> idsDisponibles(List<DroneAcuatico> flota) {
         return flota.stream()
-                .filter(DroneAcuatico::disponible)
-                .map(DroneAcuatico::id)
+                .filter(DroneAcuatico::isDisponible)
+                .map(DroneAcuatico::getId)
                 .toList();
     }
 
     public boolean existeDisponibleConBateriaSuficiente(List<DroneAcuatico> flota) {
         return flota.stream()
-                .anyMatch(d -> d.disponible() && d.bateria() >= BATERIA_MINIMA);
+                .anyMatch(d -> d.isDisponible() && d.getBateria() >= BATERIA_MINIMA);
     }
 
     public long contarDisponibles(List<DroneAcuatico> flota) {
         return flota.stream()
-                .filter(DroneAcuatico::disponible)
+                .filter(DroneAcuatico::isDisponible)
                 .count();
     }
 
     public Optional<DroneAcuatico> droneConMayorBateria(List<DroneAcuatico> flota) {
         return flota.stream()
-                .max(Comparator.comparingInt(DroneAcuatico::bateria));
+                .max(Comparator.comparingInt(DroneAcuatico::getBateria));
     }
 }
