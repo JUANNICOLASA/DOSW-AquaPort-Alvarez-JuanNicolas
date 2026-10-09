@@ -1,7 +1,13 @@
 package edu.eci.aquaport;
 
 import edu.eci.aquaport.modelo.DroneAcuatico;
+import edu.eci.aquaport.modelo.Mision;
+import edu.eci.aquaport.modelo.TipoCarga;
+import edu.eci.aquaport.repositorio.RepositorioMisionesMemoria;
 import edu.eci.aquaport.servicio.ConsultorFlota;
+import edu.eci.aquaport.servicio.NotificadorOperador;
+import edu.eci.aquaport.servicio.RegistradorMisiones;
+import edu.eci.aquaport.servicio.ValidadorMision;
 
 import java.util.List;
 
@@ -22,5 +28,22 @@ public class Main {
         System.out.println("¿Existe disponible con batería >= 35%?: " + consultor.existeDisponibleConBateriaSuficiente(flota));
         System.out.println("Cantidad de disponibles: " + consultor.contarDisponibles(flota));
         System.out.println("Drone con mayor batería: " + consultor.droneConMayorBateria(flota).orElse(null));
+
+        RegistradorMisiones registrador = new RegistradorMisiones(new RepositorioMisionesMemoria(), new ValidadorMision());
+        NotificadorOperador notificador = new NotificadorOperador(System.out);
+
+        try {
+            Mision mision = new Mision.Builder()
+                    .id("M-001")
+                    .drone(flota.get(0))
+                    .puntoPartida("Embalse Norte")
+                    .puntoLlegada("Laboratorio Hídrico")
+                    .tipoCarga(TipoCarga.MUESTRA_AGUA)
+                    .build();
+            registrador.registrar(mision);
+            notificador.notificarRegistro(mision);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            notificador.notificarError(e.getMessage());
+        }
     }
 }
