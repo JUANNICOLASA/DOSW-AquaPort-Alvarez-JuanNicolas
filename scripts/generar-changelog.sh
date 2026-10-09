@@ -36,13 +36,12 @@ escribir_rango() {
     echo
     echo "Generado automáticamente desde los commits con \`scripts/generar-changelog.sh\`."
     echo
-    anterior=""
     etiquetas=$(git tag --sort=-creatordate)
-    pendientes=$(git log --no-merges --format='%s' "$(git describe --tags --abbrev=0 2>/dev/null)"..HEAD 2>/dev/null)
+    pendientes=$(git log --no-merges --format='%s' HEAD --not --tags)
     if [ -n "$pendientes" ]; then
         echo "## Sin publicar"
         echo
-        escribir_rango "$(git describe --tags --abbrev=0)..HEAD"
+        escribir_rango "HEAD --not --tags"
     fi
     for etiqueta in $etiquetas; do
         fecha=$(git log -1 --format='%ad' --date=short "$etiqueta")
