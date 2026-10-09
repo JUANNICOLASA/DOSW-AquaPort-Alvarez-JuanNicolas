@@ -1,6 +1,5 @@
 package edu.eci.aquaport.servicio;
 
-import edu.eci.aquaport.modelo.DroneAcuatico;
 import edu.eci.aquaport.modelo.DroneSuperficial;
 import edu.eci.aquaport.modelo.EstadoDrone;
 import edu.eci.aquaport.modelo.ZonaHidrica;
