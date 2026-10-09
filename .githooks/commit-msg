@@ -1,0 +1,16 @@
+#!/bin/sh
+
+PATRON='^(feat|fix|refactor|test|docs|build|chore|ci|perf|style|revert)(\([a-z0-9-]+\))?!?: .{1,100}$'
+PRIMERA_LINEA=$(head -n 1 "$1")
+
+case "$PRIMERA_LINEA" in
+    Merge*|Revert*) exit 0 ;;
+esac
+
+if ! printf '%s' "$PRIMERA_LINEA" | grep -Eq "$PATRON"; then
+    echo "Mensaje de commit inválido: $PRIMERA_LINEA"
+    echo "Formato esperado: tipo(alcance opcional): descripción"
+    echo "Tipos permitidos: feat, fix, refactor, test, docs, build, chore, ci, perf, style, revert"
+    echo "Ejemplo: feat(rutas): planificar rutas multi-etapa con waypoints"
+    exit 1
+fi
