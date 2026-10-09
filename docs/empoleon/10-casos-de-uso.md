@@ -11,5 +11,3 @@
 | Reasignar tramo por batería crítica | Ejecutar misión multi-etapa | Batería del drone menor a 20% en mitad de la ruta |
 
 Inclusiones obligatorias: la solicitud siempre incluye la planificación; la planificación siempre valida cada drone con la cadena; la ejecución siempre registra la cadena de custodia y notifica cada waypoint.
-
-Fuente: [diagramas/diagrama-cu-empoleon.puml](../diagramas/diagrama-cu-empoleon.puml)

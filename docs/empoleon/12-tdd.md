@@ -24,7 +24,7 @@
 
 ## 3. Cobertura
 
-`mvn clean verify` aplica el quality gate de JaCoCo: 85% de líneas por clase y 75% de ramas. El resultado es 100% de líneas y 100% de ramas (ver [reto 13](13-jacoco-sonarqube.md)).
+El build aplica el quality gate de JaCoCo: 85% de líneas por clase y 75% de ramas. El resultado es 100% de líneas y 100% de ramas (ver [reto 13](13-jacoco-sonarqube.md)).
 
 ## Arquitectura
 

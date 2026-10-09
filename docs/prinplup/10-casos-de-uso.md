@@ -10,5 +10,3 @@
 | `<<include>>` Validar batería, capacidad y tipo | Siempre se descartan los drones que no cumplen las reglas. |
 | `<<extend>>` Notificar fallo al técnico | Solo ocurre si un drone entra en FALLO durante la asignación. |
 | Nuevos actores | Técnico de Mantenimiento (recibe la notificación y atiende el drone) y Centro de Control ECI (recibe el registro de la misión). |
-
-Fuente: [diagramas/diagrama-cu-prinplup.puml](../diagramas/diagrama-cu-prinplup.puml)

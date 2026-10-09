@@ -24,5 +24,3 @@ RegistradorMisiones registrador = new RegistradorMisiones(new RepositorioMisione
 ## Diagrama de clases
 
 ![Diagrama de clases](diagrama-clases-piplup.png)
-
-Fuente del diagrama: [diagramas/diagrama-clases-piplup.puml](diagramas/diagrama-clases-piplup.puml)

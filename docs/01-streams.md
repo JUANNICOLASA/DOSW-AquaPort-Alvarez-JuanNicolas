@@ -23,10 +23,3 @@ INFO: Drone con mayor batería: DroneAcuatico[id=AR-01, modelo=Aqua-Ranger 100, 
 INFO: Misión M-001 registrada con el drone AR-01 hacia Laboratorio Hídrico
 INFO: Error: El drone AR-03 no está disponible
 ```
-
-Para ejecutarlo:
-
-```bash
-mvn compile
-java -cp target/classes edu.eci.aquaport.Main
-```
