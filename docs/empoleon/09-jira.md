@@ -99,4 +99,6 @@ Registrada como comentario en [AP-1](https://mail-team-nyjtgqcj.atlassian.net/br
 
 ## Captura del roadmap
 
-![Roadmap](../capturas/jira-roadmap.png)
+![Roadmap: MVP y v2](../capturas/jira-roadmap.png)
+
+![Roadmap: Enterprise](../capturas/jira-roadmap-2.png)
