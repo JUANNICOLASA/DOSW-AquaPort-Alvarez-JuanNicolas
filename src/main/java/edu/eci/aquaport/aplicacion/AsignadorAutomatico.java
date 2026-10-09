@@ -10,7 +10,8 @@ import edu.eci.aquaport.dominio.puerto.ObservadorMision;
 import edu.eci.aquaport.dominio.puerto.RepositorioDrones;
 import edu.eci.aquaport.dominio.puerto.RepositorioMisiones;
 import edu.eci.aquaport.dominio.puerto.ServicioCondicionesHidricas;
-import edu.eci.aquaport.dominio.validacion.ValidadorMision;
+import edu.eci.aquaport.dominio.validacion.ContextoValidacion;
+import edu.eci.aquaport.dominio.validacion.ValidadorEnCadena;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +21,13 @@ public class AsignadorAutomatico {
 
     private final RepositorioDrones repositorioDrones;
     private final ServicioCondicionesHidricas servicioCondiciones;
-    private final ValidadorMision validador;
+    private final ValidadorEnCadena validador;
     private final RepositorioMisiones repositorioMisiones;
     private final List<ObservadorMision> observadores = new ArrayList<>();
     private EstrategiaSeleccion estrategia;
 
     public AsignadorAutomatico(RepositorioDrones repositorioDrones, ServicioCondicionesHidricas servicioCondiciones,
-                               EstrategiaSeleccion estrategia, ValidadorMision validador,
+                               EstrategiaSeleccion estrategia, ValidadorEnCadena validador,
                                RepositorioMisiones repositorioMisiones) {
         this.repositorioDrones = repositorioDrones;
         this.servicioCondiciones = servicioCondiciones;
@@ -50,7 +51,9 @@ public class AsignadorAutomatico {
     public Optional<Mision> asignar(SolicitudTransporte solicitud) {
         CondicionesHidricas condiciones = servicioCondiciones.consultar(solicitud.destino());
         List<DroneAcuatico> candidatos = new ArrayList<>(repositorioDrones.listarTodos().stream()
-                .filter(d -> validador.esApto(d, solicitud.pesoGramos(), condiciones))
+                .filter(DroneAcuatico::isDisponible)
+                .filter(d -> validador.validar(new ContextoValidacion(d, solicitud.pesoGramos(),
+                        solicitud.destino(), condiciones)).valido())
                 .toList());
         Optional<DroneAcuatico> elegido = seleccionarOperativo(candidatos, solicitud);
         if (elegido.isEmpty()) {
