@@ -9,6 +9,9 @@ public abstract class DroneAcuatico {
     private ZonaHidrica zona;
 
     protected DroneAcuatico(String id, String modelo, int bateria, EstadoDrone estado, ZonaHidrica zona) {
+        if (bateria < 0 || bateria > 100) {
+            throw new IllegalArgumentException("La batería del drone " + id + " debe estar entre 0 y 100: " + bateria);
+        }
         this.id = id;
         this.modelo = modelo;
         this.bateria = bateria;
