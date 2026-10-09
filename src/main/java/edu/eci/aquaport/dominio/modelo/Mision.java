@@ -112,6 +112,14 @@ public class Mision {
         }
 
         public Mision build() {
+            validarCampos();
+            if (!drone.isDisponible()) {
+                throw new IllegalStateException("El drone " + drone.getId() + " no está disponible");
+            }
+            return new Mision(this);
+        }
+
+        private void validarCampos() {
             if (id == null || id.isBlank()) {
                 throw new IllegalStateException("El id de la misión es obligatorio");
             }
@@ -122,10 +130,6 @@ public class Mision {
             validarObligatorio(prioridad, "La prioridad de la misión es obligatoria");
             validarObligatorio(estado, "El estado de la misión es obligatorio");
             validarObligatorio(waypoints, "La lista de waypoints es obligatoria");
-            if (!drone.isDisponible()) {
-                throw new IllegalStateException("El drone " + drone.getId() + " no está disponible");
-            }
-            return new Mision(this);
         }
 
         private void validarObligatorio(Object valor, String mensaje) {
