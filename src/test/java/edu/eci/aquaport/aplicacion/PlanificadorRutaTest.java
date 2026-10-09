@@ -103,6 +103,19 @@ class PlanificadorRutaTest {
     }
 
     @Test
+    @DisplayName("Un waypoint en una zona inactiva se evita aunque sus condiciones sean buenas")
+    void waypointInactivo_seDesvia() {
+        zonasInactivas.add(ZonaHidrica.LAGUNA_SUR);
+        when(repositorioDrones.listarTodos()).thenReturn(List.of(enCanal));
+        when(servicioCondiciones.consultar(any())).thenReturn(CondicionesHidricas.calmas());
+
+        RutaMultiEtapa ruta = planificador.planificar(solicitud(List.of(ZonaHidrica.LAGUNA_SUR)));
+
+        assertEquals(List.of(ZonaHidrica.LAGUNA_SUR), ruta.getDesvios());
+        assertEquals(1, ruta.getTramos().size());
+    }
+
+    @Test
     @DisplayName("Si un tramo no tiene drone apto la ruta no se planifica")
     void sinDroneApto_lanzaExcepcion() {
         when(repositorioDrones.listarTodos()).thenReturn(List.of());
