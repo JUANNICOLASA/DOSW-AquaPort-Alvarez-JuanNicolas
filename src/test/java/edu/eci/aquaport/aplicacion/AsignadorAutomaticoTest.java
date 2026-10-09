@@ -15,7 +15,7 @@ import edu.eci.aquaport.dominio.puerto.ObservadorMision;
 import edu.eci.aquaport.dominio.puerto.RepositorioDrones;
 import edu.eci.aquaport.dominio.puerto.RepositorioMisiones;
 import edu.eci.aquaport.dominio.puerto.ServicioCondicionesHidricas;
-import edu.eci.aquaport.dominio.validacion.ValidadorMision;
+import edu.eci.aquaport.dominio.validacion.ValidadorEnCadena;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ class AsignadorAutomaticoTest {
     @BeforeEach
     void setUp() {
         asignador = new AsignadorAutomatico(repositorioDrones, servicioCondiciones, estrategiaMock,
-                new ValidadorMision(), repositorioMisiones);
+                ValidadorEnCadena.estandar(zona -> true), repositorioMisiones);
         asignador.registrarObservador(observadorMock);
         solicitud = new SolicitudTransporte("S-001", ZonaHidrica.CANAL_CENTRAL, ZonaHidrica.LAB_HIDRICO,
                 TipoCarga.SENSOR, 200, Prioridad.NORMAL);

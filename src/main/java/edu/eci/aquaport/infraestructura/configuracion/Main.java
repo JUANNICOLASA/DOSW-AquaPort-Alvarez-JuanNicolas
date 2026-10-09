@@ -10,7 +10,7 @@ import edu.eci.aquaport.dominio.modelo.Prioridad;
 import edu.eci.aquaport.dominio.modelo.SolicitudTransporte;
 import edu.eci.aquaport.dominio.modelo.TipoCarga;
 import edu.eci.aquaport.dominio.modelo.ZonaHidrica;
-import edu.eci.aquaport.dominio.validacion.ValidadorMision;
+import edu.eci.aquaport.dominio.validacion.ValidadorEnCadena;
 import edu.eci.aquaport.infraestructura.hidrica.CondicionesHidricasSimuladas;
 import edu.eci.aquaport.infraestructura.notificacion.CentroControlObserver;
 import edu.eci.aquaport.infraestructura.notificacion.NotificadorOperador;
@@ -52,7 +52,7 @@ public class Main {
         CondicionesHidricasSimuladas condiciones = new CondicionesHidricasSimuladas();
         condiciones.actualizar(ZonaHidrica.EMBALSE_NORTE, new CondicionesHidricas(NivelAgitacion.MEDIO, 6));
         AsignadorAutomatico asignador = new AsignadorAutomatico(new RepositorioDronesMemoria(flota), condiciones,
-                new PrioridadCriticaStrategy(), new ValidadorMision(), new RepositorioMisionesMemoria());
+                new PrioridadCriticaStrategy(), ValidadorEnCadena.estandar(zona -> true), new RepositorioMisionesMemoria());
         asignador.registrarObservador(new CentroControlObserver());
         asignador.registrarObservador(new TecnicoMantenimientoObserver());
         return asignador;
