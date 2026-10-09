@@ -12,10 +12,10 @@ public enum ZonaHidrica {
 
     private final String nombre;
     private final TipoDrone tipoRecomendado;
-    private final int x;
-    private final int y;
+    private final double x;
+    private final double y;
 
-    ZonaHidrica(String nombre, TipoDrone tipoRecomendado, int x, int y) {
+    ZonaHidrica(String nombre, TipoDrone tipoRecomendado, double x, double y) {
         this.nombre = nombre;
         this.tipoRecomendado = tipoRecomendado;
         this.x = x;
