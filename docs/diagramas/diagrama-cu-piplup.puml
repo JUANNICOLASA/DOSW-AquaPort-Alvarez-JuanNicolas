@@ -1,0 +1,35 @@
+@startuml diagrama-cu-piplup
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+title AquaPort MVP - Casos de uso del RF AP-01 Registrar misión de transporte
+
+actor "Operador Hídrico" as Operador
+actor "Solicitante" as Solicitante
+actor "Administrador ECI" as Admin
+
+rectangle "AquaPort MVP" {
+  usecase "Registrar misión de transporte" as UC1
+  usecase "Ver flota disponible" as UC2
+  usecase "Validar disponibilidad del drone" as UC3
+  usecase "Validar zona de destino" as UC4
+  usecase "Generar código de misión" as UC5
+  usecase "Alertar batería crítica" as UC6
+  usecase "Cancelar misión pendiente" as UC7
+  usecase "Gestionar flota" as UC8
+  usecase "Consultar reporte de misiones" as UC9
+}
+
+Solicitante --> UC1
+Operador --> UC1
+Operador --> UC2
+Operador --> UC7
+Admin --> UC8
+Admin --> UC9
+
+UC1 ..> UC3 : <<include>>
+UC1 ..> UC4 : <<include>>
+UC1 ..> UC5 : <<include>>
+UC6 ..> UC1 : <<extend>>\ncondición: batería del drone < 40%
+@enduml
