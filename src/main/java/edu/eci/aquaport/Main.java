@@ -14,6 +14,7 @@ import edu.eci.aquaport.repositorio.RepositorioDronesMemoria;
 import edu.eci.aquaport.repositorio.RepositorioMisionesMemoria;
 import edu.eci.aquaport.servicio.AsignadorAutomatico;
 import edu.eci.aquaport.servicio.CondicionesHidricasSimuladas;
+import edu.eci.aquaport.servicio.ConsultorFlota;
 import edu.eci.aquaport.servicio.NotificadorOperador;
 import edu.eci.aquaport.servicio.ValidadorMision;
 
@@ -27,6 +28,7 @@ public class Main {
     public static void main(String[] args) {
         List<DroneAcuatico> flota = FlotaEjemplo.crear();
         NotificadorOperador notificador = new NotificadorOperador();
+        mostrarConsultas(flota, notificador);
         AsignadorAutomatico asignador = crearAsignador(flota);
 
         asignar(asignador, notificador, new SolicitudTransporte("S-001", ZonaHidrica.CANAL_CENTRAL,
@@ -35,6 +37,15 @@ public class Main {
                 ZonaHidrica.EMBALSE_NORTE, TipoCarga.SENSOR, 250, Prioridad.CRITICA));
         asignar(asignador, notificador, new SolicitudTransporte("S-003", ZonaHidrica.LAGUNA_SUR,
                 ZonaHidrica.EMBALSE_NORTE, TipoCarga.EQUIPO_MEDICION, 1200, Prioridad.ALTA));
+    }
+
+    private static void mostrarConsultas(List<DroneAcuatico> flota, NotificadorOperador notificador) {
+        ConsultorFlota consultor = new ConsultorFlota();
+        notificador.informar("Disponibles por tipo: " + consultor.disponiblesPorTipo(flota));
+        notificador.informar("Drone óptimo para Embalse Norte: "
+                + consultor.droneOptimoParaZona(flota, ZonaHidrica.EMBALSE_NORTE).orElse(null));
+        notificador.informar("Promedio de batería por tipo: " + consultor.promedioBateriaPorTipo(flota));
+        notificador.informar("Zonas cubiertas por la flota activa: " + consultor.zonasFlotaActiva(flota));
     }
 
     private static AsignadorAutomatico crearAsignador(List<DroneAcuatico> flota) {
