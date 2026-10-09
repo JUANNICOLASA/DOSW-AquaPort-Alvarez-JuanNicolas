@@ -1,0 +1,65 @@
+@startuml diagrama-clases-prinplup
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+title AquaPort v2 - Strategy, Observer y Factory Method
+
+abstract class DroneAcuatico {
+  + getTipo() : TipoDrone
+  + getCapacidadMaximaGramos() : int
+  + puedeOperarEn(CondicionesHidricas) : boolean
+}
+class DroneSuperficial
+class DroneSemisumergido
+class DroneBuceador
+DroneSuperficial --|> DroneAcuatico
+DroneSemisumergido --|> DroneAcuatico
+DroneBuceador --|> DroneAcuatico
+
+class FabricaDrones {
+  + crear(TipoDrone, String, int, ZonaHidrica) : DroneAcuatico
+}
+FabricaDrones ..> DroneSuperficial : crea
+FabricaDrones ..> DroneSemisumergido : crea
+FabricaDrones ..> DroneBuceador : crea
+
+interface EstrategiaSeleccion {
+  + seleccionar(List<DroneAcuatico>, SolicitudTransporte) : Optional<DroneAcuatico>
+}
+class MayorBateriaStrategy
+class ZonaCercanaStrategy
+class PrioridadCriticaStrategy
+MayorBateriaStrategy ..|> EstrategiaSeleccion
+ZonaCercanaStrategy ..|> EstrategiaSeleccion
+PrioridadCriticaStrategy ..|> EstrategiaSeleccion
+
+interface ObservadorMision {
+  + notificarAsignacion(Mision)
+  + notificarFalloAsignacion(SolicitudTransporte)
+  + notificarFalloDrone(DroneAcuatico)
+}
+abstract class ObservadorConRegistro
+class CentroControlObserver
+class TecnicoMantenimientoObserver
+ObservadorConRegistro ..|> ObservadorMision
+CentroControlObserver --|> ObservadorConRegistro
+TecnicoMantenimientoObserver --|> ObservadorConRegistro
+
+interface RepositorioDrones
+interface RepositorioMisiones
+interface ServicioCondicionesHidricas
+
+class AsignadorAutomatico {
+  + registrarObservador(ObservadorMision)
+  + eliminarObservador(ObservadorMision)
+  + cambiarEstrategia(EstrategiaSeleccion)
+  + asignar(SolicitudTransporte) : Optional<Mision>
+}
+AsignadorAutomatico --> EstrategiaSeleccion
+AsignadorAutomatico --> "*" ObservadorMision
+AsignadorAutomatico --> RepositorioDrones
+AsignadorAutomatico --> RepositorioMisiones
+AsignadorAutomatico --> ServicioCondicionesHidricas
+AsignadorAutomatico --> ValidadorMision
+@enduml
