@@ -2,12 +2,70 @@
 
 Generado automáticamente desde los commits con `scripts/generar-changelog.sh`.
 
-## Sin publicar
+## v3.0.0 (2026-10-09)
+
+### Nuevas funcionalidades
+
+- calcular eficiencia por zona, mejor drone y carga de waypoints
+- agregar collector que promedia la batería por zona en una sola pasada
+- agregar flota Enterprise de 60 drones y demostrar una ruta multi-etapa
+- informar al centro de control el avance y los fallos de las rutas
+- ejecutar rutas con reasignación automática ante fallo o batería crítica
+- planificar cada tramo con el drone apto más cercano y desviar waypoints adversos
+- modelar rutas multi-etapa con tramos, waypoints y cadena de custodia
+- agregar monitor de zonas y registro de telemetría en memoria
+- aislar la API externa de condiciones hídricas con AdaptadorAPIHidrica
+- registrar la telemetría de los drones con el decorator DroneConMonitoreo
+- validar misiones con una cadena de batería, carga, zona activa y condiciones
+- agregar nivel del agua y turbidez a las condiciones hídricas
+
+### Correcciones
+
+- excluir de la sección sin publicar los commits que ya tienen tag
+
+### Refactorizaciones
+
+- separar la validación de campos del método build de Mision
+- obtener las condiciones del agua desde el adaptador de la API
+- usar la cadena de validación en AsignadorAutomatico
+- organizar el código en capas de dominio, aplicación e infraestructura
+
+### Pruebas
+
+- medir el tiempo de la consulta de drones disponibles del MVP
+- medir con assertTimeout la asignación automática y la reasignación de tramos
+- cubrir el desvío por waypoint en zona inactiva
+- probar el flujo multi-etapa completo y sus cinco flujos alternos
+- verificar dirección de dependencias entre capas y dominio sin librerías externas
+
+### Documentación
+
+- documentar Conventional Commits, hook, protección de ramas y log de la v3
+- documentar roadmap Enterprise con tres sprints, capacidad, DoD y retrospectiva
+- agregar prompts de los mocks del flujo Enterprise
+- construir el design system Enterprise con tokens, contraste WCAG AA y mapa de flujos
+- documentar la auditoría de capas y el índice de Empoleon en el README
+- agregar plantilla del RF AP-15 misión multi-etapa con waypoints
+- agregar requisitos Enterprise con SLA y tensiones entre RF
+- documentar streams, patrones y pruebas de Enterprise
+- documentar auditoría SOLID y mapa de dependencias entre capas
+- agregar casos de uso Enterprise con los cinco flujos de fallo
+- agregar diagrama de contenedores de AquaPort Enterprise
+- documentar el quality gate Enterprise y la evolución de las métricas
+- actualizar la clase principal en la guía de ejecución
+- generar CHANGELOG.md inicial
 
 ### Construcción
 
+- permitir nombrar la versión que se está preparando
+- subir el quality gate de JaCoCo a 85% de líneas y 75% de ramas
+- agregar ArchUnit para verificar la arquitectura por capas
 - agregar script que genera CHANGELOG.md desde los commits
 - agregar hook commit-msg que valida Conventional Commits
+
+### Mantenimiento
+
+- preparar versión 3.0.0
 
 ## v2.0.1 (2026-10-09)
 
