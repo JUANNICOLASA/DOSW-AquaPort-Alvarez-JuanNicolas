@@ -1,6 +1,7 @@
 package edu.eci.aquaport.integracion;
 
 import edu.eci.aquaport.aplicacion.AsignadorAutomatico;
+import edu.eci.aquaport.aplicacion.ConsultorFlota;
 import edu.eci.aquaport.aplicacion.CoordinadorRuta;
 import edu.eci.aquaport.aplicacion.PlanificadorRuta;
 import edu.eci.aquaport.dominio.estrategia.PrioridadCriticaStrategy;
@@ -29,6 +30,15 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RendimientoTest {
+
+    @Test
+    @DisplayName("RNF-01: la consulta de drones disponibles responde en menos de 200 ms con 10 drones")
+    void consultaFlota_menosDe200ms() {
+        List<DroneAcuatico> flota = FlotaEjemplo.crearEnterprise().subList(0, 10);
+        ConsultorFlota consultor = new ConsultorFlota();
+
+        assertTimeout(Duration.ofMillis(200), () -> assertTrue(consultor.existeDisponibleConBateriaSuficiente(flota)));
+    }
 
     @Test
     @DisplayName("RNF-04: la asignación automática elige drone en menos de 400 ms con 30 drones")
