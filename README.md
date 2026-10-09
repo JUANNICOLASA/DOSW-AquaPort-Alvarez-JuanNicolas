@@ -15,7 +15,7 @@ Sistema de gestión de drones acuáticos de la Escuela Colombiana de Ingeniería
 ```bash
 mvn clean verify
 mvn compile
-java -cp target/classes edu.eci.aquaport.Main
+java -cp target/classes edu.eci.aquaport.infraestructura.configuracion.Main
 ```
 
 `mvn clean verify` ejecuta las pruebas y el quality gate de JaCoCo. El reporte de cobertura queda en `target/site/jacoco/index.html`.
@@ -24,14 +24,32 @@ java -cp target/classes edu.eci.aquaport.Main
 
 ```
 src/main/java/edu/eci/aquaport
-├── Main.java, FlotaEjemplo.java
-├── modelo        DroneAcuatico y sus tipos, Mision (Builder), SolicitudTransporte, enums
-├── fabrica       FabricaDrones
-├── estrategia    EstrategiaSeleccion y sus implementaciones
-├── observador    ObservadorMision, CentroControlObserver, TecnicoMantenimientoObserver
-├── repositorio   RepositorioMisiones, RepositorioDrones y sus implementaciones en memoria
-└── servicio      AsignadorAutomatico, ValidadorMision, ConsultorFlota, RegistradorMisiones, ...
+├── dominio            Java estándar, sin dependencias externas
+│   ├── modelo         DroneAcuatico y sus tipos, Mision, RutaMultiEtapa, Tramo, CadenaCustodia, ...
+│   ├── puerto         Interfaces que implementa la infraestructura (repositorios, API hídrica, observadores, ...)
+│   ├── estrategia     EstrategiaSeleccion y sus implementaciones
+│   ├── validacion     ValidadorMision y la cadena de validación
+│   ├── telemetria     DroneDecorator, DroneConMonitoreo
+│   └── fabrica        FabricaDrones
+├── aplicacion         AsignadorAutomatico, PlanificadorRuta, CoordinadorRuta, ConsultorFlota, EstadisticasFlota, ...
+└── infraestructura
+    ├── configuracion  Main, FlotaEjemplo
+    ├── persistencia   Repositorios en memoria
+    ├── hidrica        AdaptadorAPIHidrica y cliente de la API
+    ├── notificacion   Observadores y NotificadorOperador
+    ├── telemetria     TelemetriaEnMemoria
+    └── zonas          MonitorZonasEnMemoria
 ```
+
+## Historial de git
+
+Los commits siguen Conventional Commits. Para activar el hook que lo valida:
+
+```bash
+sh scripts/instalar-hooks.sh
+```
+
+El `CHANGELOG.md` se genera con `bash scripts/generar-changelog.sh`.
 
 ## Nivel Piplup - MVP (v1.0.0)
 
@@ -139,6 +157,61 @@ gitGraph
 - **L - Sustitución de Liskov:** donde el sistema recibe un `DroneAcuatico` funciona con cualquiera de los tres tipos. Ninguno lanza excepciones ni retorna `null` donde el padre no lo hace. Lo verifica la prueba `TiposDroneTest.tiposIntercambiables_comoDroneAcuatico`. Así el asignador puede tratar la flota mixta como una sola lista.
 - **I - Segregación de interfaces:** `EstrategiaSeleccion`, `RepositorioDrones` y `ServicioCondicionesHidricas` tienen un solo método. Las pruebas con Mockito simulan solo lo que necesitan y las implementaciones no cargan métodos que no usan.
 - **D - Inversión de dependencias:** el asignador depende de abstracciones. En la v2 las condiciones del agua vienen de `CondicionesHidricasSimuladas`, pero se puede conectar la API hídrica real sin cambiar la lógica de asignación.
+
+## Nivel Empoleon - Enterprise (v3.0.0)
+
+| # | Reto | Entrega |
+|---|---|---|
+| 01 | Streams para rutas multi-etapa | [docs/empoleon/01-streams.md](docs/empoleon/01-streams.md) |
+| 02 | Historial de git trazable | [docs/empoleon/02-git.md](docs/empoleon/02-git.md) |
+| 03 | Chain of Responsibility, Decorator y Adapter | [docs/empoleon/03-patrones.md](docs/empoleon/03-patrones.md) |
+| 04 | Auditoría SOLID | [docs/empoleon/04-solid.md](docs/empoleon/04-solid.md) |
+| 05 | C4 nivel 2: contenedores | [docs/empoleon/05-c4-contenedores.md](docs/empoleon/05-c4-contenedores.md) |
+| 06 | Requisitos Enterprise | [docs/empoleon/06-requisitos.md](docs/empoleon/06-requisitos.md) |
+| 07 | Plantilla DOSW AP-15 | [docs/empoleon/07-plantilla-dosw.md](docs/empoleon/07-plantilla-dosw.md) |
+| 08 | Design system y mapa de flujos | [docs/empoleon/08-design-system.md](docs/empoleon/08-design-system.md) |
+| 09 | Roadmap en Jira | [docs/empoleon/09-jira.md](docs/empoleon/09-jira.md) |
+| 10 | Casos de uso Enterprise | [docs/empoleon/10-casos-de-uso.md](docs/empoleon/10-casos-de-uso.md) |
+| 11 | Mocks del flujo Enterprise | [docs/empoleon/11-mocks-ia.md](docs/empoleon/11-mocks-ia.md) |
+| 12 | Pruebas en tres capas | [docs/empoleon/12-tdd.md](docs/empoleon/12-tdd.md) |
+| 13 | JaCoCo + SonarQube Enterprise | [docs/empoleon/13-jacoco-sonarqube.md](docs/empoleon/13-jacoco-sonarqube.md) |
+| 14 | Arquitectura por capas | [Sección de auditoría](#auditoría-de-la-arquitectura-por-capas) |
+
+### Auditoría de la arquitectura por capas
+
+**Regla de dependencias:** infraestructura puede depender de aplicación y dominio; aplicación solo de dominio; dominio no depende de nada externo.
+
+![Mapa de dependencias](docs/mapa-dependencias-capas.png)
+
+**Herramientas usadas**
+
+1. **ArchUnit** (`src/test/java/edu/eci/aquaport/ArquitecturaCapasTest.java`). Se ejecuta en cada `mvn verify`:
+
+   | Regla | Resultado |
+   |---|---|
+   | `capasRespetanDireccionDeDependencias`: infraestructura no es usada por ninguna capa, aplicación solo por infraestructura, dominio por aplicación e infraestructura | Cumple |
+   | `dominioSoloUsaJavaEstandar`: el dominio solo depende de `java..` y de sí mismo | Cumple |
+   | `dominioNoCreaInfraestructura`: ninguna clase del dominio llama constructores de infraestructura | Cumple |
+   | `dependenciasDePuertosSonFinales`: los puertos que usan dominio y aplicación son campos `final` (inyección por constructor) | Cumple |
+
+2. **Revisión manual con grep**:
+
+   | Búsqueda | Resultado |
+   |---|---|
+   | Imports del dominio que no sean `java.*` ni del propio dominio | 0 |
+   | Imports de `aplicacion` o `infraestructura` dentro del dominio | 0 |
+   | Imports de `infraestructura` dentro de aplicación | 0 |
+   | Imports externos (no `java.*`) en aplicación | 0 |
+   | `new` de clases de infraestructura en dominio o aplicación | 0 |
+   | `@Autowired`, `@Inject` o setters de dependencias | 0 |
+
+   ```bash
+   grep -rhE "^import " src/main/java/edu/eci/aquaport/dominio | grep -vE "^import (static )?(java\.|edu\.eci\.aquaport\.dominio\.)"
+   grep -rlE "^import edu\.eci\.aquaport\.(aplicacion|infraestructura)" src/main/java/edu/eci/aquaport/dominio
+   grep -rlE "^import edu\.eci\.aquaport\.infraestructura" src/main/java/edu/eci/aquaport/aplicacion
+   ```
+
+**Resultado:** 44 clases en dominio, 7 en aplicación y 14 en infraestructura, sin violaciones de capa. Las dependencias externas (Logger de notificación, cliente de la API hídrica, almacenamiento) viven en infraestructura y llegan a la aplicación por los puertos del dominio.
 
 ## Capturas del uso de IA
 

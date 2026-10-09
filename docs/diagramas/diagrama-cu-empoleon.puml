@@ -1,0 +1,44 @@
+@startuml diagrama-cu-empoleon
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+title AquaPort Enterprise - Casos de uso de la misión multi-etapa
+
+actor "Solicitante" as Solicitante
+actor "Operador Hídrico" as Operador
+actor "Técnico de Mantenimiento" as Tecnico
+actor "Centro de Control ECI" as Centro
+actor "Laboratorio Hídrico" as Lab
+
+rectangle "AquaPort Enterprise" {
+  usecase "Solicitar transporte multi-etapa" as UC1
+  usecase "Planificar ruta multi-etapa" as UC2
+  usecase "Ejecutar misión multi-etapa" as UC3
+  usecase "Validar drone en cadena" as UC4
+  usecase "Registrar cadena de custodia" as UC5
+  usecase "Notificar llegada a waypoint" as UC6
+  usecase "Reasignar tramo por fallo del drone" as E1
+  usecase "Desviar ruta por condición adversa" as E2
+  usecase "Rechazar ruta por zona destino inactiva" as E3
+  usecase "Marcar misión FALLIDA por custodia interrumpida" as E4
+  usecase "Reasignar tramo por batería crítica" as E5
+  usecase "Supervisar rutas activas" as UC7
+}
+
+Solicitante --> UC1
+UC1 ..> UC2 : <<include>>
+UC2 ..> UC4 : <<include>>
+UC3 ..> UC5 : <<include>>
+UC3 ..> UC6 : <<include>>
+Operador --> UC3
+Operador --> UC7
+E1 ..> UC3 : <<extend>>\ncondición: el drone del tramo\nestá en FALLO en el waypoint
+E2 ..> UC2 : <<extend>>\ncondición: el waypoint tiene\nturbidez > 100 NTU o nivel < 0.5 m
+E3 ..> UC2 : <<extend>>\ncondición: la zona destino\nestá inactiva
+E4 ..> UC3 : <<extend>>\ncondición: no hay drone\nreceptor en el traspaso
+E5 ..> UC3 : <<extend>>\ncondición: batería del drone\n< 20% en mitad de la ruta
+E1 --> Tecnico
+UC6 --> Centro
+UC5 --> Lab
+@enduml
