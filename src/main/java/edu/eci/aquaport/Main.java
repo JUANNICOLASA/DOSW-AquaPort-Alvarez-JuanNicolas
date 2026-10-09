@@ -13,6 +13,9 @@ import java.util.List;
 
 public class Main {
 
+    private Main() {
+    }
+
     public static void main(String[] args) {
         List<DroneAcuatico> flota = List.of(
                 new DroneAcuatico("AR-01", "Aqua-Ranger 100", 92, true, "Embalse Norte"),
@@ -32,11 +35,17 @@ public class Main {
         RegistradorMisiones registrador = new RegistradorMisiones(new RepositorioMisionesMemoria(), new ValidadorMision());
         NotificadorOperador notificador = new NotificadorOperador(System.out);
 
+        registrarMision(registrador, notificador, "M-001", flota.get(0));
+        registrarMision(registrador, notificador, "M-002", flota.get(2));
+    }
+
+    private static void registrarMision(RegistradorMisiones registrador, NotificadorOperador notificador,
+                                        String id, DroneAcuatico drone) {
         try {
             Mision mision = new Mision.Builder()
-                    .id("M-001")
-                    .drone(flota.get(0))
-                    .puntoPartida("Embalse Norte")
+                    .id(id)
+                    .drone(drone)
+                    .puntoPartida(drone.zona())
                     .puntoLlegada("Laboratorio Hídrico")
                     .tipoCarga(TipoCarga.MUESTRA_AGUA)
                     .build();
