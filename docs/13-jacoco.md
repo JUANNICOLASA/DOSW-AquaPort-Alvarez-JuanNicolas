@@ -1,13 +1,5 @@
 # Reto 13 - Cobertura con JaCoCo
 
-## Ejecución
-
-```bash
-mvn clean test
-```
-
-El reporte se genera en `target/site/jacoco/index.html`.
-
 ## Resultado
 
 | Clase | Cobertura de líneas | Cobertura de ramas |

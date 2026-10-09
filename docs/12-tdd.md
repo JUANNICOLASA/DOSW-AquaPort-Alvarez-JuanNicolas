@@ -25,7 +25,3 @@ El `ValidadorMision` se construyó siguiendo el ciclo Red, Green y Refactor. El 
 | Drone disponible | `droneDisponible_puedeAsignarse` |
 
 Todas las pruebas usan `@DisplayName`, siguen el patrón Arrange, Act, Assert y verifican una sola cosa.
-
-```bash
-mvn test
-```

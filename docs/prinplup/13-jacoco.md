@@ -9,11 +9,7 @@ En el `pom.xml` se agregó la ejecución `check` del plugin de JaCoCo en la fase
 | Cobertura de líneas | Cada clase (`CLASS`) | `LINE` | 80% |
 | Cobertura de ramas | Proyecto completo (`BUNDLE`) | `BRANCH` | 70% |
 
-Si cualquier clase baja de 80% de líneas o el proyecto baja de 70% de ramas, `mvn verify` termina con `BUILD FAILURE` y muestra qué regla se incumplió.
-
-```bash
-mvn clean verify
-```
+Si cualquier clase baja de 80% de líneas o el proyecto baja de 70% de ramas, el build termina con `BUILD FAILURE` y muestra qué regla se incumplió.
 
 ## Resultado
 
