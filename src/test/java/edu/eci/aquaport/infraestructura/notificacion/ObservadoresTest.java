@@ -5,8 +5,11 @@ import edu.eci.aquaport.dominio.modelo.DroneSuperficial;
 import edu.eci.aquaport.dominio.modelo.EstadoDrone;
 import edu.eci.aquaport.dominio.modelo.Mision;
 import edu.eci.aquaport.dominio.modelo.Prioridad;
+import edu.eci.aquaport.dominio.modelo.RutaMultiEtapa;
+import edu.eci.aquaport.dominio.modelo.SolicitudMultiEtapa;
 import edu.eci.aquaport.dominio.modelo.SolicitudTransporte;
 import edu.eci.aquaport.dominio.modelo.TipoCarga;
+import edu.eci.aquaport.dominio.modelo.Tramo;
 import edu.eci.aquaport.dominio.modelo.ZonaHidrica;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,5 +76,25 @@ class ObservadoresTest {
         tecnico.notificarFalloAsignacion(solicitud);
 
         assertEquals(2, tecnico.getRegistro().size());
+    }
+
+    @Test
+    @DisplayName("El centro de control registra llegadas a waypoints, reasignaciones y rutas fallidas")
+    void centroControl_registraEventosDeRuta() {
+        CentroControlObserver centro = new CentroControlObserver();
+        DroneAcuatico reemplazo = new DroneSuperficial("AR-08", 90, EstadoDrone.EN_MISION, ZonaHidrica.CANAL_CENTRAL);
+        Tramo tramo = new Tramo(1, ZonaHidrica.CANAL_CENTRAL, ZonaHidrica.LAB_HIDRICO, reemplazo);
+        RutaMultiEtapa ruta = new RutaMultiEtapa(new SolicitudMultiEtapa("S-07", ZonaHidrica.CANAL_CENTRAL, List.of(),
+                ZonaHidrica.LAB_HIDRICO, TipoCarga.SENSOR, 100, Prioridad.NORMAL), List.of(tramo), List.of());
+        ruta.interrumpir("Sin drone de reemplazo");
+
+        centro.notificarLlegadaWaypoint(ruta, tramo);
+        centro.notificarReasignacion(tramo, drone, "fallo del drone AR-07");
+        centro.notificarRutaFallida(ruta);
+
+        assertEquals(List.of(
+                "Centro de control: ruta R-07, tramo 1 completado por AR-08 en Laboratorio Hídrico",
+                "Centro de control: tramo 1 reasignado de AR-07 a AR-08 por fallo del drone AR-07",
+                "Centro de control: ALERTA, ruta R-07 FALLIDA. Sin drone de reemplazo"), centro.getRegistro());
     }
 }
