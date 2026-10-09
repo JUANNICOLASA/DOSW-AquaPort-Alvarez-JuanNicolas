@@ -15,7 +15,7 @@ Sistema de gestión de drones acuáticos de la Escuela Colombiana de Ingeniería
 ```bash
 mvn clean verify
 mvn compile
-java -cp target/classes edu.eci.aquaport.Main
+java -cp target/classes edu.eci.aquaport.infraestructura.configuracion.Main
 ```
 
 `mvn clean verify` ejecuta las pruebas y el quality gate de JaCoCo. El reporte de cobertura queda en `target/site/jacoco/index.html`.
