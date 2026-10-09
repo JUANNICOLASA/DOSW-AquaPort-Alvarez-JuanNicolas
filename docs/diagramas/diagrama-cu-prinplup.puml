@@ -1,0 +1,43 @@
+@startuml diagrama-cu-prinplup
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+title AquaPort v2 - Casos de uso de la asignación automática
+
+actor "Usuario AquaPort" as Base
+actor "Operador Hídrico" as Operador
+actor "Solicitante" as Solicitante
+actor "Administrador ECI" as Admin
+actor "Técnico de Mantenimiento" as Tecnico
+actor "Centro de Control ECI" as Centro
+
+Operador --|> Base
+Admin --|> Base
+
+rectangle "AquaPort v2" {
+  usecase "Consultar estado de la flota" as UC0
+  usecase "Solicitar transporte" as UC1
+  usecase "Asignar misión automáticamente" as UC2
+  usecase "Validar condiciones hídricas" as UC3
+  usecase "Aplicar estrategia de selección" as UC4
+  usecase "Validar batería, capacidad y tipo" as UC5
+  usecase "Notificar fallo al técnico" as UC6
+  usecase "Cambiar estrategia de selección" as UC7
+  usecase "Atender drone en fallo" as UC8
+  usecase "Gestionar flota" as UC9
+}
+
+Base --> UC0
+Solicitante --> UC1
+UC1 ..> UC2 : <<include>>
+UC2 ..> UC3 : <<include>>
+UC2 ..> UC4 : <<include>>
+UC2 ..> UC5 : <<include>>
+UC6 ..> UC2 : <<extend>>\ncondición: un drone entra en FALLO\ndurante la asignación
+Operador --> UC7
+Admin --> UC9
+Tecnico --> UC8
+UC6 --> Tecnico
+UC2 --> Centro
+@enduml
