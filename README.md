@@ -5,52 +5,6 @@ Sistema de gestión de drones acuáticos de la Escuela Colombiana de Ingeniería
 **Autor:** Juan Nicolás Álvarez Muñoz
 **Curso:** DOSW 2026-2
 
-## Requisitos
-
-- Java 21 o superior
-- Maven 3.9
-
-## Ejecución
-
-```bash
-mvn clean verify
-mvn compile
-java -cp target/classes edu.eci.aquaport.infraestructura.configuracion.Main
-```
-
-`mvn clean verify` ejecuta las pruebas y el quality gate de JaCoCo. El reporte de cobertura queda en `target/site/jacoco/index.html`.
-
-## Estructura
-
-```
-src/main/java/edu/eci/aquaport
-├── dominio            Java estándar, sin dependencias externas
-│   ├── modelo         DroneAcuatico y sus tipos, Mision, RutaMultiEtapa, Tramo, CadenaCustodia, ...
-│   ├── puerto         Interfaces que implementa la infraestructura (repositorios, API hídrica, observadores, ...)
-│   ├── estrategia     EstrategiaSeleccion y sus implementaciones
-│   ├── validacion     ValidadorMision y la cadena de validación
-│   ├── telemetria     DroneDecorator, DroneConMonitoreo
-│   └── fabrica        FabricaDrones
-├── aplicacion         AsignadorAutomatico, PlanificadorRuta, CoordinadorRuta, ConsultorFlota, EstadisticasFlota, ...
-└── infraestructura
-    ├── configuracion  Main, FlotaEjemplo
-    ├── persistencia   Repositorios en memoria
-    ├── hidrica        AdaptadorAPIHidrica y cliente de la API
-    ├── notificacion   Observadores y NotificadorOperador
-    ├── telemetria     TelemetriaEnMemoria
-    └── zonas          MonitorZonasEnMemoria
-```
-
-## Historial de git
-
-Los commits siguen Conventional Commits. Para activar el hook que lo valida:
-
-```bash
-sh scripts/instalar-hooks.sh
-```
-
-El `CHANGELOG.md` se genera con `bash scripts/generar-changelog.sh`.
-
 ## Nivel Piplup - MVP (v1.0.0)
 
 | # | Reto | Entrega |
@@ -185,7 +139,7 @@ gitGraph
 
 **Herramientas usadas**
 
-1. **ArchUnit** (`src/test/java/edu/eci/aquaport/ArquitecturaCapasTest.java`). Se ejecuta en cada `mvn verify`:
+1. **ArchUnit** (`src/test/java/edu/eci/aquaport/ArquitecturaCapasTest.java`). Se ejecuta junto con las pruebas del proyecto:
 
    | Regla | Resultado |
    |---|---|

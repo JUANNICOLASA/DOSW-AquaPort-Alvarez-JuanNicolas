@@ -1,15 +1,8 @@
 # Reto 14 - Análisis estático con SonarQube
 
-## Ejecución
+## Herramienta
 
-Se usó SonarQube Community en Docker:
-
-```bash
-docker run -d --name sonarqube -p 9000:9000 sonarqube:community
-mvn clean verify sonar:sonar -Dsonar.token=<token>
-```
-
-La configuración del proyecto (clave, URL y reporte de JaCoCo) está en las propiedades del `pom.xml`.
+Se usó SonarQube Community. La configuración del proyecto (clave, URL y reporte de JaCoCo) está en las propiedades del `pom.xml`.
 
 ## Resultado del primer análisis
 

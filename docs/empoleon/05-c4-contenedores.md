@@ -22,5 +22,3 @@ Relación con el código:
 - **Módulo de telemetría:** puerto `RegistroTelemetria` y su implementación en `infraestructura.telemetria`.
 - **Adaptador API hídrica:** `infraestructura.hidrica`.
 - **Base de datos:** el puerto `RepositorioMisiones`. Hoy se implementa en memoria y en producción se implementa con PostgreSQL sin cambiar los casos de uso.
-
-Fuente: [diagramas/c4-contenedores-empoleon.puml](../diagramas/c4-contenedores-empoleon.puml)
