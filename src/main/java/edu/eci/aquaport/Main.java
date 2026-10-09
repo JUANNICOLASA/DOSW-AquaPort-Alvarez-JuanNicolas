@@ -27,15 +27,15 @@ public class Main {
         );
 
         ConsultorFlota consultor = new ConsultorFlota();
+        NotificadorOperador notificador = new NotificadorOperador();
 
-        System.out.println("Disponibles con batería >= 35%: " + consultor.disponiblesConBateriaSuficiente(flota));
-        System.out.println("IDs disponibles: " + consultor.idsDisponibles(flota));
-        System.out.println("¿Existe disponible con batería >= 35%?: " + consultor.existeDisponibleConBateriaSuficiente(flota));
-        System.out.println("Cantidad de disponibles: " + consultor.contarDisponibles(flota));
-        System.out.println("Drone con mayor batería: " + consultor.droneConMayorBateria(flota).orElse(null));
+        notificador.informar("Disponibles con batería >= 35%: " + consultor.disponiblesConBateriaSuficiente(flota));
+        notificador.informar("IDs disponibles: " + consultor.idsDisponibles(flota));
+        notificador.informar("¿Existe disponible con batería >= 35%?: " + consultor.existeDisponibleConBateriaSuficiente(flota));
+        notificador.informar("Cantidad de disponibles: " + consultor.contarDisponibles(flota));
+        notificador.informar("Drone con mayor batería: " + consultor.droneConMayorBateria(flota).orElse(null));
 
         RegistradorMisiones registrador = new RegistradorMisiones(new RepositorioMisionesMemoria(), new ValidadorMision());
-        NotificadorOperador notificador = new NotificadorOperador(System.out);
 
         registrarMision(registrador, notificador, "M-001", flota.get(0));
         registrarMision(registrador, notificador, "M-002", flota.get(2));
