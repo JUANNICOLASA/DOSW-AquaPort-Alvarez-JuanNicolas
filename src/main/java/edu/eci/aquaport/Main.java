@@ -13,15 +13,17 @@ import java.util.List;
 
 public class Main {
 
+    private static final String MODELO = "Aqua-Ranger 100";
+
     private Main() {
     }
 
     public static void main(String[] args) {
         List<DroneAcuatico> flota = List.of(
-                new DroneAcuatico("AR-01", "Aqua-Ranger 100", 92, true, "Embalse Norte"),
-                new DroneAcuatico("AR-02", "Aqua-Ranger 100", 45, true, "Canal Central"),
-                new DroneAcuatico("AR-03", "Aqua-Ranger 100", 18, false, "Laguna Sur"),
-                new DroneAcuatico("AR-04", "Aqua-Ranger 100", 73, true, "Punto Ribereño Este")
+                new DroneAcuatico("AR-01", MODELO, 92, true, "Embalse Norte"),
+                new DroneAcuatico("AR-02", MODELO, 45, true, "Canal Central"),
+                new DroneAcuatico("AR-03", MODELO, 18, false, "Laguna Sur"),
+                new DroneAcuatico("AR-04", MODELO, 73, true, "Punto Ribereño Este")
         );
 
         ConsultorFlota consultor = new ConsultorFlota();
