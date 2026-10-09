@@ -1,0 +1,21 @@
+@startuml c4-contexto-piplup
+!pragma layout smetana
+!include <C4/C4_Context>
+
+title AquaPort MVP - Diagrama de contexto (C4 nivel 1)
+
+Person(operador, "Operador Hídrico", "Registra solicitudes de transporte y asigna drones manualmente")
+Person(solicitante, "Solicitante", "Pide el transporte de muestras de agua o sensores")
+Person(admin, "Administrador ECI", "Gestiona la flota de drones y consulta reportes")
+
+System(aquaport, "AquaPort MVP", "Gestiona la flota de 4 drones acuáticos y las misiones de transporte entre las zonas hídricas del campus")
+
+Rel(operador, aquaport, "Solicitud de misión, asignación de drone")
+Rel(aquaport, operador, "Confirmación de asignación, estado de misión")
+Rel(solicitante, aquaport, "Solicitud de transporte de muestra")
+Rel(aquaport, solicitante, "Código de misión generado")
+Rel(admin, aquaport, "Datos de la flota, consulta de reportes")
+Rel(aquaport, admin, "Estado de la flota, reporte de misiones")
+
+SHOW_LEGEND()
+@enduml
