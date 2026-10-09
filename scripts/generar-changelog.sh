@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SALIDA="${1:-CHANGELOG.md}"
+VERSION="$2"
 
 titulo_tipo() {
     case "$1" in
@@ -39,7 +40,11 @@ escribir_rango() {
     etiquetas=$(git tag --sort=-creatordate)
     pendientes=$(git log --no-merges --format='%s' HEAD --not --tags)
     if [ -n "$pendientes" ]; then
-        echo "## Sin publicar"
+        if [ -n "$VERSION" ]; then
+            echo "## $VERSION ($(date +%Y-%m-%d))"
+        else
+            echo "## Sin publicar"
+        fi
         echo
         escribir_rango "HEAD --not --tags"
     fi
