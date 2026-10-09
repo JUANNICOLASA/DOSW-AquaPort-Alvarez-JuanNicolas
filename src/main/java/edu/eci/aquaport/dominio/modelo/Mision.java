@@ -1,5 +1,7 @@
 package edu.eci.aquaport.dominio.modelo;
 
+import java.util.List;
+
 public class Mision {
 
     private final String id;
@@ -8,6 +10,7 @@ public class Mision {
     private final ZonaHidrica puntoLlegada;
     private final TipoCarga tipoCarga;
     private final Prioridad prioridad;
+    private final List<Waypoint> waypoints;
     private EstadoMision estado;
 
     private Mision(Builder builder) {
@@ -17,6 +20,7 @@ public class Mision {
         this.puntoLlegada = builder.puntoLlegada;
         this.tipoCarga = builder.tipoCarga;
         this.prioridad = builder.prioridad;
+        this.waypoints = List.copyOf(builder.waypoints);
         this.estado = builder.estado;
     }
 
@@ -44,6 +48,10 @@ public class Mision {
         return prioridad;
     }
 
+    public List<Waypoint> getWaypoints() {
+        return waypoints;
+    }
+
     public EstadoMision getEstado() {
         return estado;
     }
@@ -60,6 +68,7 @@ public class Mision {
         private ZonaHidrica puntoLlegada;
         private TipoCarga tipoCarga;
         private Prioridad prioridad = Prioridad.NORMAL;
+        private List<Waypoint> waypoints = List.of();
         private EstadoMision estado = EstadoMision.PENDIENTE;
 
         public Builder id(String id) {
@@ -92,6 +101,11 @@ public class Mision {
             return this;
         }
 
+        public Builder waypoints(List<Waypoint> waypoints) {
+            this.waypoints = waypoints;
+            return this;
+        }
+
         public Builder estado(EstadoMision estado) {
             this.estado = estado;
             return this;
@@ -107,6 +121,7 @@ public class Mision {
             validarObligatorio(tipoCarga, "El tipo de carga es obligatorio");
             validarObligatorio(prioridad, "La prioridad de la misión es obligatoria");
             validarObligatorio(estado, "El estado de la misión es obligatorio");
+            validarObligatorio(waypoints, "La lista de waypoints es obligatoria");
             if (!drone.isDisponible()) {
                 throw new IllegalStateException("El drone " + drone.getId() + " no está disponible");
             }
