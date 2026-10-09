@@ -1,10 +1,11 @@
 package edu.eci.aquaport;
 
+import edu.eci.aquaport.fabrica.FabricaDrones;
 import edu.eci.aquaport.modelo.DroneAcuatico;
-import edu.eci.aquaport.modelo.DroneSuperficial;
 import edu.eci.aquaport.modelo.EstadoDrone;
 import edu.eci.aquaport.modelo.Mision;
 import edu.eci.aquaport.modelo.TipoCarga;
+import edu.eci.aquaport.modelo.TipoDrone;
 import edu.eci.aquaport.modelo.ZonaHidrica;
 import edu.eci.aquaport.repositorio.RepositorioMisionesMemoria;
 import edu.eci.aquaport.servicio.ConsultorFlota;
@@ -20,11 +21,12 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        FabricaDrones fabrica = new FabricaDrones();
         List<DroneAcuatico> flota = List.of(
-                new DroneSuperficial("AR-01", 92, EstadoDrone.DISPONIBLE, ZonaHidrica.EMBALSE_NORTE),
-                new DroneSuperficial("AR-02", 45, EstadoDrone.DISPONIBLE, ZonaHidrica.CANAL_CENTRAL),
-                new DroneSuperficial("AR-03", 18, EstadoDrone.DISPONIBLE, ZonaHidrica.LAGUNA_SUR),
-                new DroneSuperficial("AR-04", 73, EstadoDrone.DISPONIBLE, ZonaHidrica.RIBERA_ESTE)
+                fabrica.crear(TipoDrone.SUPERFICIAL, "AR-01", 92, ZonaHidrica.EMBALSE_NORTE),
+                fabrica.crear(TipoDrone.SUPERFICIAL, "AR-02", 45, ZonaHidrica.CANAL_CENTRAL),
+                fabrica.crear(TipoDrone.SUPERFICIAL, "AR-03", 18, ZonaHidrica.LAGUNA_SUR),
+                fabrica.crear(TipoDrone.SUPERFICIAL, "AR-04", 73, ZonaHidrica.RIBERA_ESTE)
         );
         flota.get(2).cambiarEstado(EstadoDrone.RECARGANDO);
 
