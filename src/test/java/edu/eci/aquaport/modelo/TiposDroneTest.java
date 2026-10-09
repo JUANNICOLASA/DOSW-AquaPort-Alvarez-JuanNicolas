@@ -25,6 +25,14 @@ class TiposDroneTest {
     }
 
     @Test
+    @DisplayName("El drone superficial no opera en aguas calmas si la misión requiere inmersión")
+    void superficial_noOperaConInmersion() {
+        DroneAcuatico drone = new DroneSuperficial("AR-02", 80, EstadoDrone.DISPONIBLE, ZonaHidrica.CANAL_CENTRAL);
+
+        assertFalse(drone.puedeOperarEn(new CondicionesHidricas(NivelAgitacion.BAJO, 3)));
+    }
+
+    @Test
     @DisplayName("El drone semisumergido carga hasta 1500 g y opera en agua agitada sin inmersión")
     void semisumergido_capacidadYCondiciones() {
         DroneAcuatico drone = new DroneSemisumergido("SS-01", 80, EstadoDrone.DISPONIBLE, ZonaHidrica.LAGUNA_SUR);
