@@ -7,21 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NotificadorOperadorTest {
 
-    private ByteArrayOutputStream salida;
     private NotificadorOperador notificador;
 
     @BeforeEach
     void setUp() {
-        salida = new ByteArrayOutputStream();
-        notificador = new NotificadorOperador(new PrintStream(salida, true, StandardCharsets.UTF_8));
+        notificador = new NotificadorOperador();
     }
 
     @Test
@@ -35,16 +29,24 @@ class NotificadorOperadorTest {
                 .tipoCarga(TipoCarga.SENSOR)
                 .build();
 
-        notificador.notificarRegistro(mision);
+        String mensaje = notificador.notificarRegistro(mision);
 
-        assertTrue(salida.toString(StandardCharsets.UTF_8).contains("M-001"));
+        assertEquals("Misión M-001 registrada con el drone AR-01 hacia Laboratorio Hídrico", mensaje);
     }
 
     @Test
     @DisplayName("El operador recibe el mensaje de error")
     void notificarError_muestraMensaje() {
-        notificador.notificarError("Batería insuficiente");
+        String mensaje = notificador.notificarError("Batería insuficiente");
 
-        assertTrue(salida.toString(StandardCharsets.UTF_8).contains("Error: Batería insuficiente"));
+        assertEquals("Error: Batería insuficiente", mensaje);
+    }
+
+    @Test
+    @DisplayName("El operador recibe un mensaje informativo")
+    void informar_muestraMensaje() {
+        String mensaje = notificador.informar("Cantidad de disponibles: 3");
+
+        assertEquals("Cantidad de disponibles: 3", mensaje);
     }
 }

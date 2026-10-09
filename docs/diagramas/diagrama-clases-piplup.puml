@@ -69,9 +69,10 @@ package servicio {
     + validarPuntoLlegada(String) : void
   }
   class NotificadorOperador {
-    - salida : PrintStream
-    + notificarRegistro(Mision) : void
-    + notificarError(String) : void
+    - LOGGER : Logger
+    + informar(String) : String
+    + notificarRegistro(Mision) : String
+    + notificarError(String) : String
   }
   class ConsultorFlota {
     + disponiblesConBateriaSuficiente(List<DroneAcuatico>) : List<DroneAcuatico>

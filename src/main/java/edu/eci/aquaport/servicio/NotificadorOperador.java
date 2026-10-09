@@ -2,22 +2,23 @@ package edu.eci.aquaport.servicio;
 
 import edu.eci.aquaport.modelo.Mision;
 
-import java.io.PrintStream;
+import java.util.logging.Logger;
 
 public class NotificadorOperador {
 
-    private final PrintStream salida;
+    private static final Logger LOGGER = Logger.getLogger(NotificadorOperador.class.getName());
 
-    public NotificadorOperador(PrintStream salida) {
-        this.salida = salida;
+    public String informar(String mensaje) {
+        LOGGER.info(mensaje);
+        return mensaje;
     }
 
-    public void notificarRegistro(Mision mision) {
-        salida.println("Misión " + mision.getId() + " registrada con el drone "
+    public String notificarRegistro(Mision mision) {
+        return informar("Misión " + mision.getId() + " registrada con el drone "
                 + mision.getDrone().id() + " hacia " + mision.getPuntoLlegada());
     }
 
-    public void notificarError(String mensaje) {
-        salida.println("Error: " + mensaje);
+    public String notificarError(String mensaje) {
+        return informar("Error: " + mensaje);
     }
 }

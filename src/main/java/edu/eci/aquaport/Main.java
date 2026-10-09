@@ -13,27 +13,29 @@ import java.util.List;
 
 public class Main {
 
+    private static final String MODELO = "Aqua-Ranger 100";
+
     private Main() {
     }
 
     public static void main(String[] args) {
         List<DroneAcuatico> flota = List.of(
-                new DroneAcuatico("AR-01", "Aqua-Ranger 100", 92, true, "Embalse Norte"),
-                new DroneAcuatico("AR-02", "Aqua-Ranger 100", 45, true, "Canal Central"),
-                new DroneAcuatico("AR-03", "Aqua-Ranger 100", 18, false, "Laguna Sur"),
-                new DroneAcuatico("AR-04", "Aqua-Ranger 100", 73, true, "Punto Ribereño Este")
+                new DroneAcuatico("AR-01", MODELO, 92, true, "Embalse Norte"),
+                new DroneAcuatico("AR-02", MODELO, 45, true, "Canal Central"),
+                new DroneAcuatico("AR-03", MODELO, 18, false, "Laguna Sur"),
+                new DroneAcuatico("AR-04", MODELO, 73, true, "Punto Ribereño Este")
         );
 
         ConsultorFlota consultor = new ConsultorFlota();
+        NotificadorOperador notificador = new NotificadorOperador();
 
-        System.out.println("Disponibles con batería >= 35%: " + consultor.disponiblesConBateriaSuficiente(flota));
-        System.out.println("IDs disponibles: " + consultor.idsDisponibles(flota));
-        System.out.println("¿Existe disponible con batería >= 35%?: " + consultor.existeDisponibleConBateriaSuficiente(flota));
-        System.out.println("Cantidad de disponibles: " + consultor.contarDisponibles(flota));
-        System.out.println("Drone con mayor batería: " + consultor.droneConMayorBateria(flota).orElse(null));
+        notificador.informar("Disponibles con batería >= 35%: " + consultor.disponiblesConBateriaSuficiente(flota));
+        notificador.informar("IDs disponibles: " + consultor.idsDisponibles(flota));
+        notificador.informar("¿Existe disponible con batería >= 35%?: " + consultor.existeDisponibleConBateriaSuficiente(flota));
+        notificador.informar("Cantidad de disponibles: " + consultor.contarDisponibles(flota));
+        notificador.informar("Drone con mayor batería: " + consultor.droneConMayorBateria(flota).orElse(null));
 
         RegistradorMisiones registrador = new RegistradorMisiones(new RepositorioMisionesMemoria(), new ValidadorMision());
-        NotificadorOperador notificador = new NotificadorOperador(System.out);
 
         registrarMision(registrador, notificador, "M-001", flota.get(0));
         registrarMision(registrador, notificador, "M-002", flota.get(2));
