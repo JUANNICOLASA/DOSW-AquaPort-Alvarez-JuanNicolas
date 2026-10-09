@@ -3,15 +3,15 @@ package edu.eci.aquaport.infraestructura.configuracion;
 import edu.eci.aquaport.aplicacion.AsignadorAutomatico;
 import edu.eci.aquaport.aplicacion.ConsultorFlota;
 import edu.eci.aquaport.dominio.estrategia.PrioridadCriticaStrategy;
-import edu.eci.aquaport.dominio.modelo.CondicionesHidricas;
 import edu.eci.aquaport.dominio.modelo.DroneAcuatico;
-import edu.eci.aquaport.dominio.modelo.NivelAgitacion;
 import edu.eci.aquaport.dominio.modelo.Prioridad;
 import edu.eci.aquaport.dominio.modelo.SolicitudTransporte;
 import edu.eci.aquaport.dominio.modelo.TipoCarga;
 import edu.eci.aquaport.dominio.modelo.ZonaHidrica;
 import edu.eci.aquaport.dominio.validacion.ValidadorEnCadena;
-import edu.eci.aquaport.infraestructura.hidrica.CondicionesHidricasSimuladas;
+import edu.eci.aquaport.infraestructura.hidrica.AdaptadorAPIHidrica;
+import edu.eci.aquaport.infraestructura.hidrica.ClienteApiHidricaSimulado;
+import edu.eci.aquaport.infraestructura.hidrica.RespuestaApiHidrica;
 import edu.eci.aquaport.infraestructura.notificacion.CentroControlObserver;
 import edu.eci.aquaport.infraestructura.notificacion.NotificadorOperador;
 import edu.eci.aquaport.infraestructura.notificacion.TecnicoMantenimientoObserver;
@@ -49,9 +49,10 @@ public class Main {
     }
 
     private static AsignadorAutomatico crearAsignador(List<DroneAcuatico> flota) {
-        CondicionesHidricasSimuladas condiciones = new CondicionesHidricasSimuladas();
-        condiciones.actualizar(ZonaHidrica.EMBALSE_NORTE, new CondicionesHidricas(NivelAgitacion.MEDIO, 6));
-        AsignadorAutomatico asignador = new AsignadorAutomatico(new RepositorioDronesMemoria(flota), condiciones,
+        ClienteApiHidricaSimulado apiHidrica = new ClienteApiHidricaSimulado();
+        apiHidrica.registrar(ZonaHidrica.EMBALSE_NORTE.name(), new RespuestaApiHidrica(4.0, 8.0, "MEDIUM", 6));
+        AsignadorAutomatico asignador = new AsignadorAutomatico(new RepositorioDronesMemoria(flota),
+                new AdaptadorAPIHidrica(apiHidrica),
                 new PrioridadCriticaStrategy(), ValidadorEnCadena.estandar(zona -> true), new RepositorioMisionesMemoria());
         asignador.registrarObservador(new CentroControlObserver());
         asignador.registrarObservador(new TecnicoMantenimientoObserver());
