@@ -12,5 +12,3 @@ El diagrama muestra AquaPort MVP como una caja negra y las personas que interact
 | AquaPort MVP | Solicitante | Código de misión generado |
 | Administrador ECI | AquaPort MVP | Datos de la flota, consulta de reportes |
 | AquaPort MVP | Administrador ECI | Estado de la flota, reporte de misiones |
-
-Fuente del diagrama: [diagramas/c4-contexto-piplup.puml](diagramas/c4-contexto-piplup.puml)

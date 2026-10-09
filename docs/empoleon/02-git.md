@@ -6,13 +6,7 @@ Todos los commits de la v3 siguen el formato `tipo(alcance): descripción` con l
 
 ## Hook de validación
 
-El hook está en `.githooks/commit-msg` y se instala con:
-
-```bash
-sh scripts/instalar-hooks.sh
-```
-
-El script configura `core.hooksPath` para que git use la carpeta `.githooks` del repositorio, así el hook se comparte con todo el equipo. Se usa la etapa `commit-msg` y no `pre-commit` porque el mensaje solo está disponible en esa etapa: `pre-commit` se ejecuta antes de escribirlo. El hook revisa la primera línea con esta expresión regular y, si no coincide, cancela el commit y muestra el formato esperado:
+El hook está en `.githooks/commit-msg`. El script `scripts/instalar-hooks.sh` configura `core.hooksPath` para que git use la carpeta `.githooks` del repositorio, así el hook se comparte con todo el equipo. Se usa la etapa `commit-msg` y no `pre-commit` porque el mensaje solo está disponible en esa etapa: `pre-commit` se ejecuta antes de escribirlo. El hook revisa la primera línea con esta expresión regular y, si no coincide, cancela el commit y muestra el formato esperado:
 
 ```
 ^(feat|fix|refactor|test|docs|build|chore|ci|perf|style|revert)(\([a-z0-9-]+\))?!?: .{1,100}$
@@ -49,13 +43,7 @@ Con estas reglas no es posible hacer push directo a `main` ni a `develop`; todo 
 
 ## CHANGELOG automático
 
-`scripts/generar-changelog.sh` recorre los tags y agrupa los commits por tipo (nuevas funcionalidades, correcciones, refactorizaciones, pruebas, documentación, construcción y mantenimiento). Para la release se ejecutó así:
-
-```bash
-bash scripts/generar-changelog.sh CHANGELOG.md v3.0.0
-```
-
-Resultado: [CHANGELOG.md](../../CHANGELOG.md)
+`scripts/generar-changelog.sh` recorre los tags y agrupa los commits por tipo (nuevas funcionalidades, correcciones, refactorizaciones, pruebas, documentación, construcción y mantenimiento). Para la release se generó con el nombre de versión `v3.0.0`. Resultado: [CHANGELOG.md](../../CHANGELOG.md)
 
 ## Log de git de la v3
 

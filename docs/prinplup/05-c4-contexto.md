@@ -28,5 +28,3 @@
 **Qué creció:** el sistema ahora depende de información externa (condiciones del agua) y avisa a otros sistemas (centro de control y alertas). Aparece un nuevo rol para atender los fallos.
 
 **Qué se mantuvo:** los tres actores originales, el propósito del sistema (transportar muestras entre las zonas hídricas del campus) y la regla de mostrar solo lo que se ve desde afuera, sin clases internas.
-
-Fuente: [diagramas/c4-contexto-prinplup.puml](../diagramas/c4-contexto-prinplup.puml)

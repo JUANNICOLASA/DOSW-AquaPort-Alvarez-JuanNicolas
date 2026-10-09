@@ -10,8 +10,6 @@
 | Aplicación | `aplicacion` | Dominio |
 | Infraestructura | `configuracion`, `persistencia`, `hidrica`, `notificacion`, `telemetria`, `zonas` | Aplicación y dominio |
 
-Fuente: [diagramas/mapa-dependencias-capas.puml](../diagramas/mapa-dependencias-capas.puml)
-
 ## Verificaciones
 
 | Verificación | Herramienta | Resultado |

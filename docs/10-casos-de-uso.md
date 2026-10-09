@@ -18,5 +18,3 @@ Diagrama del RF AP-01 "Registrar misión de transporte".
 - **Operador Hídrico:** registra misiones, ve la flota y cancela misiones pendientes.
 - **Solicitante:** participa en el registro porque es quien pide el transporte y recibe el código de misión.
 - **Administrador ECI:** gestiona la flota y consulta el reporte de misiones.
-
-Fuente del diagrama: [diagramas/diagrama-cu-piplup.puml](diagramas/diagrama-cu-piplup.puml)
