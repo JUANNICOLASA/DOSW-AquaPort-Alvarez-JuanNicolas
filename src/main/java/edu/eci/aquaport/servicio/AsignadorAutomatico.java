@@ -71,7 +71,7 @@ public class AsignadorAutomatico {
 
     private Mision crearMision(SolicitudTransporte solicitud, DroneAcuatico drone) {
         Mision mision = new Mision.Builder()
-                .id("M-" + solicitud.id())
+                .id(solicitud.id().replaceFirst("^S-", "M-"))
                 .drone(drone)
                 .puntoPartida(solicitud.origen())
                 .puntoLlegada(solicitud.destino())

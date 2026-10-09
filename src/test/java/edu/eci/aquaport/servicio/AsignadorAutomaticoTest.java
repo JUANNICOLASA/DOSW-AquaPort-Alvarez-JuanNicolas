@@ -73,6 +73,7 @@ class AsignadorAutomaticoTest {
         Optional<Mision> mision = asignador.asignar(solicitud);
 
         assertEquals("AR-01", mision.orElseThrow().getDrone().getId());
+        assertEquals("M-001", mision.get().getId());
         assertEquals(EstadoDrone.EN_MISION, drone.getEstado());
         verify(repositorioMisiones).guardar(mision.get());
         verify(observadorMock, times(1)).notificarAsignacion(mision.get());
