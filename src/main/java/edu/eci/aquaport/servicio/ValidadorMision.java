@@ -6,8 +6,18 @@ import java.util.List;
 
 public class ValidadorMision {
 
+    public static final int BATERIA_MINIMA = 35;
+
+    private static final List<String> ZONAS_VALIDAS = List.of(
+            "Embalse Norte",
+            "Canal Central",
+            "Laguna Sur",
+            "Punto Ribereño Este",
+            "Laboratorio Hídrico"
+    );
+
     public boolean tieneBateriaSuficiente(DroneAcuatico drone) {
-        return drone.bateria() >= 35;
+        return drone.bateria() >= BATERIA_MINIMA;
     }
 
     public boolean estaDisponible(DroneAcuatico drone) {
@@ -18,8 +28,8 @@ public class ValidadorMision {
         if (puntoLlegada == null || puntoLlegada.isBlank()) {
             throw new IllegalArgumentException("El punto de llegada es obligatorio");
         }
-        if (!List.of("Embalse Norte", "Canal Central", "Laguna Sur", "Punto Ribereño Este", "Laboratorio Hídrico").contains(puntoLlegada)) {
-            throw new IllegalArgumentException("La zona " + puntoLlegada + " no es una zona válida");
+        if (!ZONAS_VALIDAS.contains(puntoLlegada)) {
+            throw new IllegalArgumentException("La zona " + puntoLlegada + " no es una zona válida de AquaPort");
         }
     }
 }
