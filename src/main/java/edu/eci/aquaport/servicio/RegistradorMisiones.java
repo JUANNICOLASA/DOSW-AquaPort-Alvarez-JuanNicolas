@@ -18,11 +18,13 @@ public class RegistradorMisiones {
 
     public void registrar(Mision mision) {
         if (!validador.tieneBateriaSuficiente(mision.getDrone())) {
-            throw new IllegalStateException("El drone " + mision.getDrone().id()
-                    + " tiene batería insuficiente (" + mision.getDrone().bateria()
+            throw new IllegalStateException("El drone " + mision.getDrone().getId()
+                    + " tiene batería insuficiente (" + mision.getDrone().getBateria()
                     + "%). Mínimo requerido: " + ValidadorMision.BATERIA_MINIMA + "%.");
         }
-        validador.validarPuntoLlegada(mision.getPuntoLlegada());
+        if (mision.getPuntoPartida() == mision.getPuntoLlegada()) {
+            throw new IllegalArgumentException("El punto de partida y el de llegada no pueden ser la misma zona");
+        }
         repositorio.guardar(mision);
     }
 

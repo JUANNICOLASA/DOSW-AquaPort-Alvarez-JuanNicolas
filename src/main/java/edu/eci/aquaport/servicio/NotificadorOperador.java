@@ -15,7 +15,7 @@ public class NotificadorOperador {
 
     public String notificarRegistro(Mision mision) {
         return informar("Misión " + mision.getId() + " registrada con el drone "
-                + mision.getDrone().id() + " hacia " + mision.getPuntoLlegada());
+                + mision.getDrone().getId() + " hacia " + mision.getPuntoLlegada().getNombre());
     }
 
     public String notificarError(String mensaje) {
