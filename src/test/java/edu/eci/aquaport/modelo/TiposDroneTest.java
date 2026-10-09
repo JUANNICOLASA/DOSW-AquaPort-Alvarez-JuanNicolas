@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TiposDroneTest {
@@ -81,5 +82,19 @@ class TiposDroneTest {
         assertFalse(drone.isDisponible());
         assertEquals("Aqua-Diver 50", drone.getModelo());
         assertEquals("BU-02 (BUCEADOR, 0%, SUMERGIDO, Laboratorio Hídrico)", drone.toString());
+    }
+
+    @Test
+    @DisplayName("No se puede crear un drone con batería mayor a 100%")
+    void bateriaMayorA100_lanzaExcepcion() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new DroneSuperficial("AR-99", 120, EstadoDrone.DISPONIBLE, ZonaHidrica.CANAL_CENTRAL));
+    }
+
+    @Test
+    @DisplayName("No se puede crear un drone con batería negativa")
+    void bateriaNegativa_lanzaExcepcion() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new DroneBuceador("BU-99", -5, EstadoDrone.DISPONIBLE, ZonaHidrica.EMBALSE_NORTE));
     }
 }
