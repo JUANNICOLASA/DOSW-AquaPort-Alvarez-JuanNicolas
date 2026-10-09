@@ -1,0 +1,98 @@
+@startuml diagrama-clases-piplup
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+title AquaPort MVP - Diagrama de clases
+
+package modelo {
+  class DroneAcuatico <<record>> {
+    - id : String
+    - modelo : String
+    - bateria : int
+    - disponible : boolean
+    - zona : String
+  }
+  enum TipoCarga {
+    MUESTRA_AGUA
+    SENSOR
+    PAQUETE_LIGERO
+  }
+  enum EstadoMision {
+    PENDIENTE
+    EN_TRANSITO
+    ENTREGADA
+    FALLIDA
+  }
+  class Mision {
+    - id : String
+    - drone : DroneAcuatico
+    - puntoPartida : String
+    - puntoLlegada : String
+    - tipoCarga : TipoCarga
+    - estado : EstadoMision
+  }
+  class "Mision.Builder" as Builder {
+    + id(String) : Builder
+    + drone(DroneAcuatico) : Builder
+    + puntoPartida(String) : Builder
+    + puntoLlegada(String) : Builder
+    + tipoCarga(TipoCarga) : Builder
+    + estado(EstadoMision) : Builder
+    + build() : Mision
+  }
+}
+
+package repositorio {
+  interface RepositorioMisiones {
+    + guardar(Mision) : void
+    + buscarPorId(String) : Optional<Mision>
+    + listarTodas() : List<Mision>
+  }
+  class RepositorioMisionesMemoria {
+    - misiones : List<Mision>
+  }
+}
+
+package servicio {
+  class RegistradorMisiones {
+    - repositorio : RepositorioMisiones
+    - validador : ValidadorMision
+    + RegistradorMisiones(RepositorioMisiones, ValidadorMision)
+    + registrar(Mision) : void
+    + consultar(String) : Optional<Mision>
+    + listar() : List<Mision>
+  }
+  class ValidadorMision {
+    + tieneBateriaSuficiente(DroneAcuatico) : boolean
+    + estaDisponible(DroneAcuatico) : boolean
+    + validarPuntoLlegada(String) : void
+  }
+  class NotificadorOperador {
+    - LOGGER : Logger
+    + informar(String) : String
+    + notificarRegistro(Mision) : String
+    + notificarError(String) : String
+  }
+  class ConsultorFlota {
+    + disponiblesConBateriaSuficiente(List<DroneAcuatico>) : List<DroneAcuatico>
+    + idsDisponibles(List<DroneAcuatico>) : List<String>
+    + existeDisponibleConBateriaSuficiente(List<DroneAcuatico>) : boolean
+    + contarDisponibles(List<DroneAcuatico>) : long
+    + droneConMayorBateria(List<DroneAcuatico>) : Optional<DroneAcuatico>
+  }
+}
+
+Mision +-- Builder
+Builder ..> Mision : construye
+Mision --> DroneAcuatico
+Mision --> TipoCarga
+Mision --> EstadoMision
+RepositorioMisionesMemoria ..|> RepositorioMisiones
+RegistradorMisiones --> RepositorioMisiones
+RegistradorMisiones --> ValidadorMision
+RepositorioMisiones ..> Mision
+NotificadorOperador ..> Mision
+ConsultorFlota ..> DroneAcuatico
+ValidadorMision ..> DroneAcuatico
+@enduml
